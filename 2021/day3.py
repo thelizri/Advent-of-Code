@@ -67,8 +67,6 @@ def getLeastCommon(file, pos, default):
 	else:
 		return "0"
 
-
-#mylist = list(filter(lambda x: x[0]==common, mylist))
 mylist = getRows()
 length = len(mylist[0])
 pos = 0
