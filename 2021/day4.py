@@ -22,3 +22,31 @@ while i < len(rows)/5:
 	bingo_boards.append(board)
 	i += 1
 
+bingo_states = []
+for i in bingo_boards:
+	bingo_states.append(1)
+
+def checkIfBoardHasWon(board_state):
+	for i in products:
+		if board_state % i == 0:
+			return True
+	return False
+
+def addBingoNumberToAllBoards(number):
+	for i in range(0, len(bingo_boards)):
+		if number in bingo_boards[i]: #Check for number in board
+			index = bingo_boards[i].index(number)
+			bingo_states[i] *= prime[index] #This is wrong. Should be the index of match
+
+def getWinningBoard():
+	for i in range(0, len(bingo_states)):
+		if checkIfBoardHasWon(bingo_states[i]):
+			return i
+	return -1
+
+for bingo in bingo_numbers:
+	addBingoNumberToAllBoards(bingo)
+	result = getWinningBoard()
+	if result != -1:
+		print(result)
+		break
