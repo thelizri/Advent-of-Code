@@ -43,14 +43,6 @@ def calcScoreOfBoard(indexOfBoard, bingo):
 			thesum += board[i]
 	return thesum*bingo
 
-def calcScoreOfBoardPart2(indexOfBoard, bingo):
-	board = bingo_boards[indexOfBoard]
-	thesum = 0
-	for i in bingo_numbers:
-		if i == bingo: board.remove(i); break
-		if i in board: board.remove(i)
-	return sum(board)*bingo
-
 file = open("day4.txt")
 bingo_numbers = file.readline().strip().split(",")
 bingo_numbers = list(map(lambda x: int(x), bingo_numbers))
@@ -83,6 +75,22 @@ for bingo in bingo_numbers:
 
 #Part 2
 
+def getWinningBoardPart2():
+	result = []
+	for i in range(0, len(bingo_states)):
+		if bingo_states[i] == 0: continue
+		if checkIfBoardHasWon(bingo_states[i]):
+			result.append(i)
+	return result
+
+def calcScoreOfBoardPart2(indexOfBoard, bingo):
+	board = bingo_boards[indexOfBoard]
+	thesum = 0
+	for i in bingo_numbers:
+		if i == bingo: board.remove(i); break
+		if i in board: board.remove(i)
+	return sum(board)*bingo
+
 #Init states again
 bingo_states = []
 for i in bingo_boards:
@@ -93,10 +101,14 @@ last = -1
 lastb = -1
 for bingo in bingo_numbers:
 	addBingoNumberToAllBoards(bingo)
-	result = getWinningBoard()
-	if result != -1:
-		last = result
-		lastb = bingo
-		bingo_states[last]=0
+	result = getWinningBoardPart2()
+	if result != []:
+		if len(result) == 1:
+			last = result[0]
+			lastb = bingo
+			bingo_states[last]=0
+		else:
+			for i in result:
+				bingo_states[i]=0
 
 print("Part 2: "+str(calcScoreOfBoardPart2(last, lastb)))
