@@ -8,7 +8,7 @@ import re
 bingo_boards = []
 bingo_states = []
 prime = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97] #First 25 prime numbers
-products = [9059606, 44676511, 2310, 2800733, 95041567, 907383479, 4132280413, 3118414, 8795307, 19720385, 41281849, 103256791] # We can use these numbers to check if a bingo board has won
+products = [2310, 2800733, 95041567, 907383479, 4132280413, 3118414, 8795307, 19720385, 41281849, 103256791] # We can use these numbers to check if a bingo board has won
 #Diagonal top-left to bottom-right, Diagonal bottom-left to top-right, row 0-4, col 0-4
 
 def checkIfBoardHasWon(board_state):
@@ -28,6 +28,20 @@ def getWinningBoard():
 		if checkIfBoardHasWon(bingo_states[i]):
 			return i
 	return -1
+
+#Sum of all unmarked number
+def calcScoreOfBoard(indexOfBoard, bingo):
+	board = bingo_boards[indexOfBoard]
+	state = bingo_states[indexOfBoard]
+	thesum = 0
+	for i in range(0, len(prime)):
+		p = prime[i]
+		if state % p == 0:
+			continue
+		else:
+			thesum += board[i]
+	return thesum*bingo
+
 
 file = open("day4.txt")
 bingo_numbers = file.readline().strip().split(",")
@@ -51,9 +65,10 @@ while i < len(rows)/5:
 for i in bingo_boards:
 	bingo_states.append(1)
 
+#Draw bingo numbers
 for bingo in bingo_numbers:
 	addBingoNumberToAllBoards(bingo)
 	result = getWinningBoard()
 	if result != -1:
-		print(result)
+		print("Part 1: "+str(calcScoreOfBoard(result, bingo)))
 		break
