@@ -1,7 +1,12 @@
 import re
+# Step 1: Parse input and create bingo boards
+# Step 2: All bingo boards start with state 1.
+# Step 3: Draw next number. Check if any bingo boards contain number.
+# Step 4: If they do. Take the index, get the prime at that index, and multiply the state with it.
+# Step 5: Check if any of the boards has bingo. If they do, calculate the score.
 
 prime = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97] #First 25 prime numbers
-products = [9059606, 44676511, 2310, 2800733, 95041567, 907383479, 4132280413, 3118414, 8795307, 19720385, 41281849, 103256791]
+products = [9059606, 44676511, 2310, 2800733, 95041567, 907383479, 4132280413, 3118414, 8795307, 19720385, 41281849, 103256791] # We can use these numbers to check if a bingo board has won
 #Diagonal top-left to bottom-right, Diagonal bottom-left to top-right, row 0-4, col 0-4
 
 file = open("day4.txt")
