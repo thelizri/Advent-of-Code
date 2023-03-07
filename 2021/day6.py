@@ -9,22 +9,28 @@ def countDown(tu):
 def countDownList(li):
 	return list(map(countDown, li))
 
-def findZero(li):
+def findNumber(li, num):
 	[timer, amount] = li
-	return timer == 0
-
-def findSix(li):
-	[timer, amount] = li
-	return timer == 6
+	return timer == num
 
 def addNewFish(li):
-	ll = list(filter(findZero, li))
+	ll = list(filter(lambda x: findNumber(x, 0), li))
 	if ll == []:
 		return li
 	else:
 		[[timer, amount]] = ll
 		li.append([9, amount])
 		return li
+
+def mergeSixes(li):
+	allSixes = list(filter(lambda x: findNumber(x, 6), li))
+	count = 0
+	for x in allSixes:
+		[timer, amount] = x
+		count += amount
+		li.remove(x)
+	li.append([6, count])
+	return li
 
 def day(li):
 	li = addNewFish(li)
@@ -46,17 +52,6 @@ def reformat(li):
 		if count == 0: continue
 		result.append([n, li.count(n)])
 	return result
-
-def mergeSixes(li):
-	allSixes = list(filter(findSix, li))
-	count = 0
-	for x in allSixes:
-		[timer, amount] = x
-		count += amount
-		li.remove(x)
-	li.append([6, count])
-	return li
-
 
 mylist = []
 file = open("day6.txt")
