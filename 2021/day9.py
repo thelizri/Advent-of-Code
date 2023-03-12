@@ -68,7 +68,3 @@ for y in range(0, height):
 li.sort(reverse=True)
 part2_result = li[0]*li[1]*li[2]
 print("Part 2: "+str(part2_result))
-
-
-#Part 1: 633
-#Part 2: 1050192
