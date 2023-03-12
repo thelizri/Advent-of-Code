@@ -39,4 +39,4 @@ for row in text_list:
 				break;
 	stack.clear()
 
-print(points)
+print("Part 1: "+str(points))
