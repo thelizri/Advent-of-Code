@@ -11,7 +11,7 @@ for row in file:
 print("Part 1: " + str(counter))
 
 #Part 2
-file = open("day1.txt", "r")
+file.seek(0)
 a = int(file.readline())
 b = int(file.readline())
 c = int(file.readline())
@@ -24,3 +24,5 @@ for row in file:
 	a, b, c = b, c, int(row)
 
 print("Part 2: " + str(counter))
+
+file.close()

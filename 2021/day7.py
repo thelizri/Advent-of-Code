@@ -32,3 +32,5 @@ for num in range(small, large):
 
 print("Part 1: "+str(min(part1)))
 print("Part 2: "+str(min(part2)))
+
+file.close()

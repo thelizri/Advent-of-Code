@@ -73,3 +73,5 @@ for i in range(80, 256):
 
 fish = countFish(mylist)
 print("Part 2: "+str(fish))
+
+file.close()

@@ -21,7 +21,7 @@ def addBingoNumberToAllBoards(number):
 	for i in range(0, len(bingo_boards)):
 		if number in bingo_boards[i]: #Check for number in board
 			index = bingo_boards[i].index(number)
-			bingo_states[i] *= prime[index] #This is wrong. Should be the index of match
+			bingo_states[i] *= prime[index] 
 
 def getWinningBoard():
 	for i in range(0, len(bingo_states)):
@@ -49,6 +49,8 @@ bingo_numbers = list(map(lambda x: int(x), bingo_numbers))
 
 rows = list(map(lambda x: x.strip(), file.readlines()))
 rows = list(filter(lambda x: x, rows))
+
+file.close()
 
 #Init bingo boards
 i = 0

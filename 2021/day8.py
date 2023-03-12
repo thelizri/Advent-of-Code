@@ -104,4 +104,5 @@ for row in file:
 	sum += translate(dic, result)
 
 print("Part 2: "+str(sum))
-	
+
+file.close()

@@ -53,3 +53,5 @@ print("Part 1: "+str(len(result)))
 
 result = list(filter(lambda x: x > 1, map2.values()))
 print("Part 2: "+str(len(result)))
+
+file.close()

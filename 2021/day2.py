@@ -17,7 +17,7 @@ print("Part 1: "+str(result))
 x = 0
 y = 0
 aim = 0
-file = open("day2.txt", "r")
+file.seek(0)
 for row in file:
 	[instruction, value] = row.split()
 	if(instruction == "forward"):
@@ -29,3 +29,5 @@ for row in file:
 		aim += int(value)
 result = x*y
 print("Part 2: "+str(result))
+
+file.close()
