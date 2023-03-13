@@ -8,7 +8,7 @@ for row in file:
 def validCoord(coord):
 	(row, col) = coord
 	if row < 0 or row > 9: return False
-	elif col < 0 or row > 9: return False
+	elif col < 0 or col > 9: return False
 	return True
 
 def getAdjacent(row, col):
@@ -16,3 +16,42 @@ def getAdjacent(row, col):
 	(row+1, col+1), (row+1, col-1), (row-1, col+1), (row-1, col-1)]
 	return list(filter(validCoord, adj))
 
+def increment(matrix):
+	for row in range(0, 10):
+		for col in range(0, 10):
+			matrix[row][col]+=1
+
+# First, the energy level of each octopus increases by 1.
+# Then, any octopus with an energy level greater than 9 flashes
+# This increases the energy level of all adjacent octopuses by 1
+count = 0
+
+def getAllPotentialFlashers(matrix, flashed):
+	flashers = []
+	for row in range(0, 10):
+		for col in range(0, 10):
+			if matrix[row][col] > 9 and (row, col) not in flashed: flashers.append((row, col))
+	return flashers
+
+def incrementAdj(matrix, flashers):
+	for (row, col) in flashers:
+		for (adjRow, adjCol) in getAdjacent(row, col):
+			matrix[adjRow][adjCol] += 1
+
+def flash(matrix, flashed):
+	flashers = getAllPotentialFlashers(matrix, flashed)
+	if len(flashers) > 0:
+		incrementAdj(matrix, flashers)
+		flashed.extend(flashers)
+		flash(matrix, flashed)
+	else:
+		global count
+		count += len(flashed)
+		for (row, col) in flashed:
+			matrix[row][col] = 0
+
+for i in range(0, 100):
+	increment(matrix)
+	flash(matrix, [])
+
+print(count)
