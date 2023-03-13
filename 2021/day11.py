@@ -54,4 +54,26 @@ for i in range(0, 100):
 	increment(matrix)
 	flash(matrix, [])
 
-print(count)
+print("Part 1: "+str(count))
+
+#Part 2
+matrix = []
+file.seek(0)
+for row in file:
+	line = [int(char) for char in row.strip()]
+	matrix.append(line)
+file.close()
+
+def allZero(matrix):
+	for row in matrix:
+		for num in row:
+			if num != 0: return False
+	return True
+
+round = 0
+while not allZero(matrix):
+	increment(matrix)
+	flash(matrix, [])
+	round += 1
+
+print("Part 2: "+str(round))
