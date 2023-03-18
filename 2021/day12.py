@@ -40,9 +40,13 @@ part1 = dfs_search("start", graph, nodes)
 print("Part 1: "+str(part1))
 
 #Part 2 Gives wrong result
-def dfs_search2(node, graph, unvisited, visited):
+
+def dfs_search(node, graph, unvisited, visited, path):
+    path.append(node)
     if node == "end": return 1
-    if node != "start" and node.islower(): visited = True
+    if node != "start" and node.islower() and path.count(node) > 1: 
+        visited = True
+        if node in unvisited: unvisited.remove(node)
 
     neigh = graph.get(node).copy()
     if "start" in neigh: neigh.remove("start")
@@ -51,13 +55,14 @@ def dfs_search2(node, graph, unvisited, visited):
     for n in neigh:
         if n in unvisited:
             copy_unvisited = unvisited.copy()
+            if n.islower() and visited and n in path: continue
             if n.islower() and visited:
                 copy_unvisited.remove(n)
-            total += dfs_search2(n, graph, copy_unvisited, visited)
+            total += dfs_search(n, graph, copy_unvisited, visited, path.copy())
     return total
 
 nodes = list(graph.keys())
 nodes.remove("start")
 
-part2 = dfs_search2("start", graph, nodes, False)
+part2 = dfs_search("start", graph, nodes, False, [])
 print("Part 2: "+str(part2))
