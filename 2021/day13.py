@@ -48,3 +48,21 @@ for t in li:
 
 part1_answer = str(len(points))
 print("Part 1: "+part1_answer)
+
+#Part 2
+for index in range(1, len(instr)):
+	li = fold(instr[index], li)
+points = set(())
+for t in li:
+	points.add(t)
+
+maxX = max(points, key=lambda k: k[0])[0] + 1
+maxY = max(points, key=lambda k: k[1])[1] + 1
+
+#Will output the characters that are the answer for part 2
+for y in range(maxY):
+	for x in range(maxX):
+		t = (x,y)
+		if t in points: print("#", end="")
+		else: print(".", end="")
+	print(" ")
