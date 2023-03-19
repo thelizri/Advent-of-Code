@@ -11,7 +11,11 @@ for row in file:
 	li.append((x,y))
 
 #Read instructions
+instr = []
 for row in file:
-	print(row.strip())
+	[foldDir, number]=re.search(r"[xy]=\d+", row).group().split("=")
+	instr.append((foldDir, int(number)))
+
 
 print(li)
+print(instr)
