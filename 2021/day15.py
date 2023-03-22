@@ -27,6 +27,7 @@ def getAdjacent(x, y):
 	return list(filter(validCoord, candidates))
 
 def dfs_search(x, y, score, visited):
+	if score > 50: return float("inf")
 	score += matrix[y][x]
 	visited.append((x, y))
 
@@ -37,8 +38,7 @@ def dfs_search(x, y, score, visited):
 	neighbors = list(filter(lambda x: x not in visited, candidates))
 	if neighbors:
 		results = []
-		for n in neighbors:
-			(x, y) = n
+		for x,y in neighbors:
 			results.append(dfs_search(x, y, score, visited.copy()))
 		return min(results)
 	else:
