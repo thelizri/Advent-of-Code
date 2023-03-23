@@ -1,3 +1,7 @@
+import time
+import heapq
+start_time = time.time()
+
 #Goal: Find path with lowest total risk
 #Can't move diagonally
 
@@ -37,7 +41,6 @@ def getMin(queue):
 	return (minX, minY, minDist)
 
 queue = []
-visited = []
 graph = dict()
 for y in range(height):
 	for x in range(width):
@@ -48,10 +51,10 @@ for y in range(height):
 			queue.append((0,0,0))
 
 graph[(0,0)]=0
+heapq.heapify(queue)
 
 while queue:
 	(x,y,dist) = getMin(queue)
-	visited.append((x,y))
 	neighbors = getAdjacent(x, y)
 	for cx,cy in neighbors:
 		tempDistance = dist + matrix[cy][cx]
@@ -64,6 +67,7 @@ while queue:
 shortestPath = graph[(width-1, height-1)]
 print(f"Part 1: {shortestPath}")
 
+print(f"Time: {time.time()-start_time}")
 
 # function dijkstra(G, S)
 #     for each vertex V in G
