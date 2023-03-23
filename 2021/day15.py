@@ -30,17 +30,8 @@ def getAdjacent(x, y):
 	candidates = [(x+1,y), (x-1,y), (x,y+1), (x,y-1)]
 	return list(filter(validCoord, candidates))
 
-def getMin(queue):
-	(minX, minY, minDist) = queue[0]
-	for x,y,dist in queue:
-		if dist < minDist:
-			minX = x
-			minY = y
-			minDist = dist
-	queue.remove((minX, minY, minDist))
-	return (minX, minY, minDist)
-
 queue = []
+visited = dict()
 graph = dict()
 for y in range(height):
 	for x in range(width):
@@ -55,8 +46,10 @@ heapq.heapify(queue)
 
 while queue:
 	(dist,x,y) = heapq.heappop(queue)
+	if visited.get((x,y), False): continue
+	visited[(x,y)]=True
 	neighbors = getAdjacent(x, y)
-	for cx,cy in neighbors:
+	for cx,cy in neighbors:#
 		tempDistance = dist + matrix[cy][cx]
 		distance = graph[(cx,cy)]
 		if tempDistance < distance:
