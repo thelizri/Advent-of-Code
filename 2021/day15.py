@@ -41,13 +41,13 @@ visited = []
 graph = dict()
 for y in range(height):
 	for x in range(width):
-		graph.update({(x,y): (infinity, None)})
+		graph.update({(x,y): infinity})
 		if x != 0 or y != 0:
 			queue.append((x,y,infinity))
 		else:
 			queue.append((0,0,0))
 
-graph[(0,0)]=(0, None)
+graph[(0,0)]=0
 
 while queue:
 	(x,y,dist) = getMin(queue)
@@ -55,13 +55,13 @@ while queue:
 	neighbors = getAdjacent(x, y)
 	for cx,cy in neighbors:
 		tempDistance = dist + matrix[cy][cx]
-		distance = graph[(cx,cy)][0]
+		distance = graph[(cx,cy)]
 		if tempDistance < distance:
-			graph[(cx,cy)]=(tempDistance, (x,y))
+			graph[(cx,cy)]=tempDistance
 			i = queue.index((cx,cy,distance))
 			queue[i]=(cx,cy,tempDistance)
 
-shortestPath = graph[(width-1, height-1)][0]
+shortestPath = graph[(width-1, height-1)]
 print(f"Part 1: {shortestPath}")
 
 
