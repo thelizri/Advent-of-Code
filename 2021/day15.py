@@ -66,6 +66,8 @@ print(f"Part 1: {shortestPath}")
 print(f"Time: {time.time()-start_time}")
 
 #Part 2
+#Not the most efficent approach
+#Part 2 takes about 25 minutes to execute
 def addTo(num, add):
 	number = num+add
 	if number > 9:
