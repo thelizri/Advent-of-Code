@@ -29,6 +29,7 @@ def move(x, y, direction):
 	return (x,y)
 
 def goRight():
+	steps = 0
 	for y in range(height):
 		for x in range(width):
 			if matrix[y][x] == 1:
@@ -36,8 +37,11 @@ def goRight():
 				if matrix[nY][nX]==0:
 					matrix[nY][nX] = 1
 					matrix[y][x] = 0
+					steps += 1
+	return steps
 
 def goDown():
+	steps = 0
 	for y in range(height):
 		for x in range(width):
 			if matrix[y][x] == -1:
@@ -45,7 +49,19 @@ def goDown():
 				if matrix[nY][nX]==0:
 					matrix[nY][nX] = -1
 					matrix[y][x] = 0
+					steps += 1
+	return steps
 
 goRight()
 goDown()
 
+totalSteps = 10
+count = 0
+
+while totalSteps > 0:
+	count += 1
+	s1 = goRight()
+	s2 = goDown()
+	totalSteps = s1 + s2
+
+print(count)
