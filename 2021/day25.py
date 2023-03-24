@@ -29,33 +29,34 @@ def move(x, y, direction):
 	return (x,y)
 
 def goRight():
-	steps = 0
-	skip = False
+	li = []
 	for y in range(height):
 		for x in range(width):
-			if skip:
-				skip = False
-				continue
 			if matrix[y][x] == 1:
 				(nX, nY) = move(x, y, 1)
 				if matrix[nY][nX]==0:
-					skip = True
-					matrix[nY][nX] = 1
-					matrix[y][x] = 0
-					steps += 1
-	return steps
+					li.append((x,y))
+	for x,y in li:
+		matrix[y][x] = 0
+		(nX, nY) = move(x, y, 1)
+		matrix[nY][nX] = 1
+
+	return len(li)
 
 def goDown():
-	steps = 0
+	li = []
 	for y in range(height):
 		for x in range(width):
 			if matrix[y][x] == -1:
 				(nX, nY) = move(x, y, -1)
 				if matrix[nY][nX]==0:
-					matrix[nY][nX] = -1
-					matrix[y][x] = 0
-					steps += 1
-	return steps
+					li.append((x,y))
+	for x,y in li:
+		matrix[y][x] = 0
+		(nX, nY) = move(x, y, -1)
+		matrix[nY][nX] = -1
+
+	return len(li)
 
 def printMatrix():
 	for row in matrix:
@@ -71,10 +72,11 @@ def printMatrix():
 
 printMatrix()
 
-goRight()
-goDown()
-
-printMatrix()
+for i in range(4):
+	goRight()
+	goDown()
+	print(f"After step {i+1}:")
+	printMatrix()
 
 
 
