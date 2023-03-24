@@ -30,11 +30,16 @@ def move(x, y, direction):
 
 def goRight():
 	steps = 0
+	skip = False
 	for y in range(height):
 		for x in range(width):
+			if skip:
+				skip = False
+				continue
 			if matrix[y][x] == 1:
 				(nX, nY) = move(x, y, 1)
 				if matrix[nY][nX]==0:
+					skip = True
 					matrix[nY][nX] = 1
 					matrix[y][x] = 0
 					steps += 1
@@ -52,16 +57,34 @@ def goDown():
 					steps += 1
 	return steps
 
+def printMatrix():
+	for row in matrix:
+		for character in row:
+			if character == 0:
+				print(".", end="")
+			elif character == -1:
+				print("v", end="")
+			elif character == 1:
+				print(">", end="")
+		print(" ")
+	print("\n\n")
+
+printMatrix()
+
 goRight()
 goDown()
 
-totalSteps = 10
-count = 0
+printMatrix()
 
-while totalSteps > 0:
-	count += 1
-	s1 = goRight()
-	s2 = goDown()
-	totalSteps = s1 + s2
 
-print(count)
+
+# totalSteps = 10
+# count = 0
+
+# while totalSteps > 0:
+# 	count += 1
+# 	s1 = goRight()
+# 	s2 = goDown()
+# 	totalSteps = s1 + s2
+
+# print(count)
