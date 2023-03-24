@@ -15,6 +15,37 @@ for row in file:
 
 #1 represents rightwards direction
 #-1 represents downwards direction
+#First we move right
+#Then we move down
 
 height = len(matrix)
 width = len(matrix[0])
+
+def move(x, y, direction):
+	if direction==1:
+		x = (x+1)%width
+	elif direction == -1:
+		y = (y+1)%height
+	return (x,y)
+
+def goRight():
+	for y in range(height):
+		for x in range(width):
+			if matrix[y][x] == 1:
+				(nX, nY) = move(x, y, 1)
+				if matrix[nY][nX]==0:
+					matrix[nY][nX] = 1
+					matrix[y][x] = 0
+
+def goDown():
+	for y in range(height):
+		for x in range(width):
+			if matrix[y][x] == -1:
+				(nX, nY) = move(x, y, -1)
+				if matrix[nY][nX]==0:
+					matrix[nY][nX] = -1
+					matrix[y][x] = 0
+
+goRight()
+goDown()
+
