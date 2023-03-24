@@ -13,13 +13,14 @@ for row in file:
 		else: line.append(0)
 	matrix.append(line)
 
+height = len(matrix)
+width = len(matrix[0])
+
+#Part 1
 #1 represents rightwards direction
 #-1 represents downwards direction
 #First we move right
 #Then we move down
-
-height = len(matrix)
-width = len(matrix[0])
 
 def move(x, y, direction):
 	if direction==1:
@@ -58,30 +59,16 @@ def goDown():
 
 	return len(li)
 
-def printMatrix():
-	for row in matrix:
-		for character in row:
-			if character == 0:
-				print(".", end="")
-			elif character == -1:
-				print("v", end="")
-			elif character == 1:
-				print(">", end="")
-		print(" ")
-	print("\n\n")
-
 def step():
 	s1 = goRight()
 	s2 = goDown()
 	return s1 + s2
 
-
-
-totalSteps = 10
+totalSteps = 1
 count = 0
 
 while totalSteps > 0:
 	count += 1
 	totalSteps = step()
 
-print(count)
+print(f"Part 1: {count}")
