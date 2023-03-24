@@ -70,23 +70,18 @@ def printMatrix():
 		print(" ")
 	print("\n\n")
 
-printMatrix()
-
-for i in range(4):
-	goRight()
-	goDown()
-	print(f"After step {i+1}:")
-	printMatrix()
+def step():
+	s1 = goRight()
+	s2 = goDown()
+	return s1 + s2
 
 
 
-# totalSteps = 10
-# count = 0
+totalSteps = 10
+count = 0
 
-# while totalSteps > 0:
-# 	count += 1
-# 	s1 = goRight()
-# 	s2 = goDown()
-# 	totalSteps = s1 + s2
+while totalSteps > 0:
+	count += 1
+	totalSteps = step()
 
-# print(count)
+print(count)
