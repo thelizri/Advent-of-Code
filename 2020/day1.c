@@ -26,8 +26,7 @@ void part2(int numbers[], int length){
    }
 }
 
-int main()
-{
+int* read(int *length){
    FILE* ptr;
    char str[50];
    ptr = fopen("day1.txt", "r");
@@ -36,7 +35,7 @@ int main()
       printf("file can't be opened \n");
    }
 
-   int num[500];
+   int static num[500];
    int index = 0;
 
    while (fgets(str, 50, ptr) != NULL) {
@@ -45,9 +44,16 @@ int main()
    }
 
    fclose(ptr);
+   *length = index;
+   return num;
+}
 
-   part1(num, index);
-   part2(num, index);
+int main()
+{
+   int length = 0;
+   int *num = read(&length);
+   part1(num, length);
+   part2(num, length);
 
    return 0;
 }
