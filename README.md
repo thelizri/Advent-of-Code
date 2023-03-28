@@ -1,5 +1,8 @@
 # Advent-of-Code
 
+# 2020
+2020 is being done in C. It's been a while since I programmed in C. Should be fun.
+
 # 2021
 2021 is being done in Python. It's my first time programming in python. I'm using Advent of Code to get familiar with the language. So far, I really miss the way Elixir deals with higher order functions. 
 
