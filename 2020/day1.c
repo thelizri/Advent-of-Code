@@ -2,6 +2,30 @@
 #include <stdlib.h>
 #include <string.h>
 
+void part1(int numbers[], int length){
+   for (int i = 0; i < length-1; i++) {
+      for (int j = i+1; j<length; j++){
+         if(numbers[j]+numbers[i]==2020){
+            int result = numbers[j]*numbers[i];
+            printf("Part 1: %d\n", result);
+         }
+      }
+   }
+}
+
+void part2(int numbers[], int length){
+   for (int i = 0; i < length-2; i++) {
+      for (int j = i+1; j<length-1; j++){
+         for(int k=j+1; k<length; k++){
+            if(numbers[j]+numbers[i]+numbers[k]==2020){
+               int result = numbers[j]*numbers[i]*numbers[k];
+               printf("Part 2: %d\n", result);
+            }
+         }
+      }
+   }
+}
+
 int main()
 {
    FILE* ptr;
@@ -22,27 +46,8 @@ int main()
 
    fclose(ptr);
 
-   for (int i = 0; i < index-1; i++) {
-      for (int j = i+1; j<index; j++){
-         if(num[j]+num[i]==2020){
-            int result = num[j]*num[i];
-            printf("Part 1: %d\n", result);
-         }
-      }
-   }
-
-   for (int i = 0; i < index-2; i++) {
-      for (int j = i+1; j<index-1; j++){
-         for(int k=j+1; k<index; k++){
-            if(num[j]+num[i]+num[k]==2020){
-               int result = num[j]*num[i]*num[k];
-               printf("Part 2: %d\n", result);
-            }
-         }
-      }
-   }
-
-   /*Find the two entries that sum to 2020; what do you get if you multiply them together?*/
+   part1(num, index);
+   part2(num, index);
 
    return 0;
 }
