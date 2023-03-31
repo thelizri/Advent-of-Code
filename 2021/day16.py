@@ -17,6 +17,8 @@ hex_to_bin = {
     'F': '1111'
 }
 
+score = 0
+
 def getBinary(string):
 	result = ''
 	for s in string:
@@ -27,6 +29,18 @@ def getHeader(string):
 	packet_version = string[0:3]
 	type_id = string[3:6]
 	rest = string[6:]
+
+	if type_id == '100':
+		while rest[0] != '0':
+			rest = rest[5:]
+		rest = rest[5:]
+	return rest
+
+
+test = "D2FE28"
+string = getBinary(test)
+string = getHeader(string)
+print(string)
 
 
 
