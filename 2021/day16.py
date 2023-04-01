@@ -65,9 +65,52 @@ def getValueLiteral(string):
         score += rest[1:5]
         rest = rest[5:]
     score += rest[1:5]
-    return convertToNumber(score)
+    rest = rest[5:]
+    return (convertToNumber(score), rest)
+
+def evaluate(string):
+    packet_version = string[0:3]
+    type_id = string[3:6]
+    length_id = string[6]
+    rest = string[6:]
+
+    #Literal
+    if type_id == '100':
+        return getValueLiteral(string)
+    elif type_id == '000':
+        pass
+    elif type_id == '001':
+        pass
+    elif type_id == '010':
+        pass
+    elif type_id == '011':
+        pass
+    elif type_id == '101':
+        pass
+    elif type_id == '110':
+        pass
+    elif type_id == '111':
+        pass
+
+
+# If the length type ID is 0, then the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet.
+# If the length type ID is 1, then the next 11 bits are a number that represents the number of sub-packets immediately contained by this packet.
+
+
+
+
 
 string = "D2FE28"
 string = getBinary(string)
 score = getValueLiteral(string)
 print(score)
+
+
+
+# Packets with type ID 0 are sum packets - their value is the sum of the values of their sub-packets. If they only have a single sub-packet, their value is the value of the sub-packet.
+# Packets with type ID 1 are product packets - their value is the result of multiplying together the values of their sub-packets. If they only have a single sub-packet, their value is the value of the sub-packet.
+# Packets with type ID 2 are minimum packets - their value is the minimum of the values of their sub-packets.
+# Packets with type ID 3 are maximum packets - their value is the maximum of the values of their sub-packets.
+# Packets with type ID 5 are greater than packets - their value is 1 if the value of the first sub-packet is greater than the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
+# Packets with type ID 6 are less than packets - their value is 1 if the value of the first sub-packet is less than the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
+# Packets with type ID 7 are equal to packets - their value is 1 if the value of the first sub-packet is equal to the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
