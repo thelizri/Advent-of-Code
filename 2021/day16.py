@@ -20,27 +20,39 @@ hex_to_bin = {
 score = 0
 
 def getBinary(string):
-	result = ''
-	for s in string:
-		result += hex_to_bin[s]
-	return result
+    result = ''
+    for s in string:
+        result += hex_to_bin[s]
+    return result
 
-def getHeader(string):
-	packet_version = string[0:3]
-	type_id = string[3:6]
-	rest = string[6:]
+def convertToNumber(string):
+    return int(string, base=2)
 
-	if type_id == '100':
-		while rest[0] != '0':
-			rest = rest[5:]
-		rest = rest[5:]
-	return rest
+def getVersion(string):
+    packet_version = string[0:3]
+    type_id = string[3:6]
+    length_id = string[6]
+    rest = string[6:]
 
+    global score
+    score += convertToNumber(packet_version)
 
-test = "D2FE28"
-string = getBinary(test)
-string = getHeader(string)
-print(string)
+    if type_id == '100':
+        while rest[0] != '0':
+            rest = rest[5:]
+        rest = rest[5:]
+        return rest
+    elif length_id == '0':
+        return string[22:]
+    else:
+        return string[18:]
 
+file = open("day16.txt", "r")
+my_input = file.readline().strip()
+string = getBinary(my_input)
 
+while len(string) > 6:
+    string = getVersion(string)
+
+print(f"Part 1: {score}")
 
