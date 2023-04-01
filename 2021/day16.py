@@ -56,3 +56,18 @@ while len(string) > 6:
 
 print(f"Part 1: {score}")
 
+#Part 2
+
+def getValueLiteral(string):
+    score = ''
+    rest = string[6:]
+    while rest[0] != '0':
+        score += rest[1:5]
+        rest = rest[5:]
+    score += rest[1:5]
+    return convertToNumber(score)
+
+string = "D2FE28"
+string = getBinary(string)
+score = getValueLiteral(string)
+print(score)
