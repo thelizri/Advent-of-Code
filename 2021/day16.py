@@ -47,77 +47,74 @@ print(f"Part 1: {score}")
 
 ###########################################################################################
 #Part 2
-# scores = dict()
-# themap = dict()
-# pos = 0
 
-# for i in range(length):
-#     scores[i] = 0
+def createPackets(packets, binary, pos):
+    current = pos
+    type_id = binary[pos+3:6]
+    length_id = binary[pos+6]
 
-# def getValueLiteral(string):
-#     global pos
-#     score = ''
-#     rest = string[6:]; pos+=6
-#     while rest[0] != '0':
-#         score += rest[1:5]
-#         rest = rest[5:]; pos+=5
-#     score += rest[1:5]
-#     rest = rest[5:]; pos+=5
-#     return (convertToNumber(score), rest)
+    if type_id == '100':
+        (score, rest, pos) = getValueLiteral(binary[pos:], pos)
+        packets.append(binary[current:pos])
+        return pos
+    elif length_id == '0':
+        pos += 22
+        packets.append(binary[current:pos])
+        return pos
+    else:
+        pos += 18
+        packets.append(binary[current:pos])
+        return pos
 
-# def evaluate_packet(packet, i):
-#     global pos
-#     current = pos
-#     type_id = packet[3:6]
-#     length_id = packet[6]
+def getValueLiteral(string, pos):
+    score = ''
+    rest = string[6:]; pos+=6
+    while rest[0] != '0':
+        score += rest[1:5]
+        rest = rest[5:]; pos+=5
+    score += rest[1:5]
+    rest = rest[5:]; pos+=5
+    return (convertToNumber(score), rest, pos)
 
-#     if type_id == '100':
-#         (score, rest) = getValueLiteral(packet)
-#         scores[i] = score
-#         themap[i] = range(current, pos)
-#         return rest
-#     elif length_id == '0':
-#         pos += 22
-#         themap[i] = range(current, pos)
-#         return packet[22:]
-#     else:
-#         pos += 18
-#         themap[i] = range(current, pos)
-#         return packet[18:]
+def checkrange(r1, r2):
+    return set((r1)).issubset(r2)
 
-# def checkrange(r1, r2):
-#     return set((r1)).issubset(r2)
+def op_code(packet_scores, number, type_id):
+    if type_id == '000':
+        scores[number] = sum(packet_scores)
+    elif type_id == '001':
+        product = 1
+        for i in packet_scores: product *= i
+        scores[number] = product
+    elif type_id == '010':
+        scores[number] = min(packet_scores)
+    elif type_id == '011':
+        scores[number] = max(packet_scores)
+    elif type_id == '101':
+        if packet_scores[0] > packet_scores[1]:
+            scores[number] = 1
+        else:
+            scores[number] = 0
+    elif type_id == '110':
+        if packet_scores[0] < packet_scores[1]:
+            scores[number] = 1
+        else:
+            scores[number] = 0
+    elif type_id == '111':
+        if packet_scores[0] == packet_scores[1]:
+            scores[number] = 1
+        else:
+            scores[number] = 0
 
-# def product(li):
-#     result = 1
-#     for i in li: result *= i
-#     return result
+binary = getBinary(my_input)
 
-# def op_code(packet_scores, number, type_id):
-#     if type_id == '000':
-#         scores[number] = sum(packet_scores)
-#     elif type_id == '001':
-#         scores[number] = product(packet_scores)
-#     elif type_id == '010':
-#         scores[number] = min(packet_scores)
-#     elif type_id == '011':
-#         scores[number] = max(packet_scores)
-#     elif type_id == '101':
-#         if packet_scores[0] > packet_scores[1]:
-#             scores[number] = 1
-#         else:
-#             scores[number] = 0
-#     elif type_id == '110':
-#         if packet_scores[0] < packet_scores[1]:
-#             scores[number] = 1
-#         else:
-#             scores[number] = 0
-#     elif type_id == '111':
-#         if packet_scores[0] == packet_scores[1]:
-#             scores[number] = 1
-#         else:
-#             scores[number] = 0
+pos = 0
+packets = []
+while pos + 6 < len(binary):
+    pos = createPackets(packets, binary, pos)
 
+print(binary)
+print(packets)
 
 # If the length type ID is 0, then the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet.
 # If the length type ID is 1, then the next 11 bits are a number that represents the number of sub-packets immediately contained by this packet.
