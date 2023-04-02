@@ -33,11 +33,13 @@ def getVersion(string, score, length):
     else:
         return (string[18:], score, length)
 
+#Read input
 file = open("day16.txt", "r")
 my_input = file.readline().strip()
 string = getBinary(my_input)
 file.close()
 
+#Part 1
 score = 0
 length = 0
 while len(string) > 6:
@@ -50,20 +52,25 @@ print(f"Part 1: {score}")
 
 def createPackets(packets, binary, pos):
     current = pos
-    type_id = binary[pos+3:6]
-    length_id = binary[pos+6]
+    type_id = binary[(pos+3):(pos+6)]
+    length_id = binary[(pos+6)]
 
     if type_id == '100':
         (score, rest, pos) = getValueLiteral(binary[pos:], pos)
+        print(score)
         packets.append(binary[current:pos])
         return pos
     elif length_id == '0':
         pos += 22
-        packets.append(binary[current:pos])
+        packet = binary[current:pos]
+        if pos-current == len(packet): 
+            packets.append(binary[current:pos])
         return pos
     else:
         pos += 18
-        packets.append(binary[current:pos])
+        packet = binary[current:pos]
+        if pos-current == len(packet): 
+            packets.append(binary[current:pos])
         return pos
 
 def getValueLiteral(string, pos):
@@ -106,6 +113,50 @@ def op_code(packet_scores, number, type_id):
         else:
             scores[number] = 0
 
+def eval_packet(packets, number, scores, owned):
+    packet = packets[number]
+    type_id = packet[3:6]
+    length_id = packet[6]
+    owned[number] = False
+    print(owned)
+
+    if type_id == '100':
+        (score, rest, pos) = getValueLiteral(packet, 0)
+        scores[number] = score
+        return None
+
+    packet_numbers = []
+
+    if length_id == '0':
+        bits = convertToNumber(packet[7:22])
+        for i in range(number+1, len(packets)):
+            if bits <= 0: break
+            if owned.get(i, False): continue
+            if len(packets[i]) > bits: continue
+            packet_numbers.append(i)
+            owned[i] = True
+            bits -= len(packets[i])
+    else:
+        amount = convertToNumber(packet[7:18])
+        for i in range(number+1, len(packets)):
+            if amount<=0: break
+            if owned.get(i, False): continue
+            packet_numbers.append(i)
+            owned[i] = True
+            amount -= 1
+
+    packet_scores = []
+    for i in packet_numbers:
+        packet_scores.append(scores[i])
+
+    op_code(packet_scores, number, type_id)
+
+
+
+
+
+
+
 binary = getBinary(my_input)
 
 pos = 0
@@ -115,6 +166,15 @@ while pos + 6 < len(binary):
 
 print(binary)
 print(packets)
+
+# owned = dict()
+# scores = dict()
+# for i in range(len(packets)-1, -1, -1):
+#     eval_packet(packets, i, scores, owned)
+
+# print(binary)
+# print(packets)
+# print(scores)
 
 # If the length type ID is 0, then the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet.
 # If the length type ID is 1, then the next 11 bits are a number that represents the number of sub-packets immediately contained by this packet.
