@@ -18,6 +18,7 @@ hex_to_bin = {
 }
 
 score = 0
+length = 0
 
 def getBinary(string):
     result = ''
@@ -34,7 +35,8 @@ def getVersion(string):
     length_id = string[6]
     rest = string[6:]
 
-    global score
+    global score, length
+    length += 1
     score += convertToNumber(packet_version)
 
     if type_id == '100':
@@ -49,14 +51,18 @@ def getVersion(string):
 
 file = open("day16.txt", "r")
 my_input = file.readline().strip()
+file.close()
 string = getBinary(my_input)
 
 while len(string) > 6:
     string = getVersion(string)
 
 print(f"Part 1: {score}")
-
 #Part 2
+
+scores = []
+for x in range(length):
+    scores.append(0)
 
 def getValueLiteral(string):
     score = ''
@@ -68,42 +74,30 @@ def getValueLiteral(string):
     rest = rest[5:]
     return (convertToNumber(score), rest)
 
-def evaluate(string):
-    packet_version = string[0:3]
-    type_id = string[3:6]
-    length_id = string[6]
-    rest = string[6:]
+def evaluate_packet(packet, i):
+    type_id = packet[3:6]
+    length_id = packet[6]
 
-    #Literal
     if type_id == '100':
-        return getValueLiteral(string)
-    elif type_id == '000':
-        pass
-    elif type_id == '001':
-        pass
-    elif type_id == '010':
-        pass
-    elif type_id == '011':
-        pass
-    elif type_id == '101':
-        pass
-    elif type_id == '110':
-        pass
-    elif type_id == '111':
-        pass
-
+        (score, rest) = getValueLiteral(packet)
+        scores[i] = score
+        return rest
+    elif length_id == '0':
+        return packet[22:]
+    else:
+        return packet[18:]
 
 # If the length type ID is 0, then the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet.
 # If the length type ID is 1, then the next 11 bits are a number that represents the number of sub-packets immediately contained by this packet.
 
 
+string = getBinary(my_input)
+i = 0
+while len(string) > 6:
+    string = evaluate_packet(string, i)
+    i+=1
 
-
-
-string = "D2FE28"
-string = getBinary(string)
-score = getValueLiteral(string)
-print(score)
+print(scores)
 
 
 
