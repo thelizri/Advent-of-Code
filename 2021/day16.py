@@ -57,7 +57,6 @@ def createPackets(packets, binary, pos):
 
     if type_id == '100':
         (score, rest, pos) = getValueLiteral(binary[pos:], pos)
-        print(score)
         packets.append(binary[current:pos])
         return pos
     elif length_id == '0':
@@ -118,7 +117,6 @@ def eval_packet(packets, number, scores, owned):
     type_id = packet[3:6]
     length_id = packet[6]
     owned[number] = False
-    print(owned)
 
     if type_id == '100':
         (score, rest, pos) = getValueLiteral(packet, 0)
