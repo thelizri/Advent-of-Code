@@ -58,34 +58,104 @@ while len(string) > 6:
     string = getVersion(string)
 
 print(f"Part 1: {score}")
-#Part 2
 
+#Part 2
 scores = []
-for x in range(length):
+themap = dict()
+pos = 0
+
+for i in range(length):
     scores.append(0)
 
 def getValueLiteral(string):
+    global pos
     score = ''
-    rest = string[6:]
+    rest = string[6:]; pos+=6
     while rest[0] != '0':
         score += rest[1:5]
-        rest = rest[5:]
+        rest = rest[5:]; pos+=5
     score += rest[1:5]
-    rest = rest[5:]
+    rest = rest[5:]; pos+=5
     return (convertToNumber(score), rest)
 
 def evaluate_packet(packet, i):
+    global pos
+    current = pos
     type_id = packet[3:6]
     length_id = packet[6]
 
     if type_id == '100':
         (score, rest) = getValueLiteral(packet)
         scores[i] = score
+        themap[i] = (current, pos)
         return rest
     elif length_id == '0':
+        pos += 22
+        themap[i] = (current, pos)
         return packet[22:]
     else:
+        pos += 18
+        themap[i] = (current, pos)
         return packet[18:]
+
+def checkrange(r1, r2):
+    return set((r1)).issubset(r2)
+
+def product(li):
+    result = 1
+    for i in li:
+        result *= i
+    return result
+
+def evaluate(packet, number, start, end):
+    type_id = packet[3:6]
+    length_id = packet[6]
+    if type_id == '100':
+        return None
+
+    packet_scores = []
+
+    if length_id == '0':
+        lengthbits = convertToNumber(packet[7:22])
+        packetstocheck = []
+        r2 = range(end, end+lengthbits)
+        for item in themap.items():
+            (key, (r1_start, r1_end)) = item
+            r1 = range(r1_start, r1_end)
+            if checkrange(r1, r2):
+                packetstocheck.append(key)
+        for i in packetstocheck:
+            packet_scores.append(scores[i])
+    else:
+        many = convertToNumber(packet[7:18])
+        for i in range(x+1, x+1+many):
+            packet_scores.append(scores[i])
+
+    if type_id == '000':
+        scores[number] = sum(packet_scores)
+    elif type_id == '001':
+        scores[number] = product(packet_scores)
+    elif type_id == '010':
+        scores[number] = min(packet_scores)
+    elif type_id == '011':
+        scores[number] = max(packet_scores)
+    elif type_id == '101':
+        if packet_scores[0] > packet_scores[1]:
+            scores[number] = 1
+        else:
+            scores[number] = 0
+    elif type_id == '110':
+        if packet_scores[0] < packet_scores[1]:
+            scores[number] = 1
+        else:
+            scores[number] = 0
+    elif type_id == '111':
+        if packet_scores[0] == packet_scores[1]:
+            scores[number] = 1
+        else:
+            scores[number] = 0
+
+
 
 # If the length type ID is 0, then the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet.
 # If the length type ID is 1, then the next 11 bits are a number that represents the number of sub-packets immediately contained by this packet.
@@ -97,8 +167,12 @@ while len(string) > 6:
     string = evaluate_packet(string, i)
     i+=1
 
+string = getBinary(my_input)
+for x in range(length-1, -1, -1):
+    (start, end) = themap[x]
+    packet = string[start:end]
+    evaluate(packet, x, start, end)
 print(scores)
-
 
 
 # Packets with type ID 0 are sum packets - their value is the sum of the values of their sub-packets. If they only have a single sub-packet, their value is the value of the sub-packet.
