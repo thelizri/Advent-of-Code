@@ -167,14 +167,14 @@ while pos + 6 < len(binary):
 print(binary)
 print(packets)
 
-# owned = dict()
-# scores = dict()
-# for i in range(len(packets)-1, -1, -1):
-#     eval_packet(packets, i, scores, owned)
+owned = dict()
+scores = dict()
+for i in range(len(packets)-1, -1, -1):
+    eval_packet(packets, i, scores, owned)
 
-# print(binary)
-# print(packets)
-# print(scores)
+print(binary)
+print(packets)
+print(scores)
 
 # If the length type ID is 0, then the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet.
 # If the length type ID is 1, then the next 11 bits are a number that represents the number of sub-packets immediately contained by this packet.
