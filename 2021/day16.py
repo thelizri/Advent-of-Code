@@ -14,31 +14,31 @@ def getBinary(string):
         result += hex_to_bin[s]
     return result
 
-def getVersion(string, score, length):
-    packet_version = string[0:3]
-    type_id = string[3:6]
-    length_id = string[6]
-    rest = string[6:]
+def getVersion(packet, score, pos, length):
+    packet_version = string[pos:pos+3]
+    type_id = string[pos+3:pos+6]
+    length_id = string[pos+6]
+    pos += 6
 
     length += 1
     score += int(packet_version, 2)
 
     if type_id == '100':
-        (rest, value) = evaluate_literal(rest)
-        return (rest, score, length)
+        (pos, value) = evaluate_literal(packet, pos)
+        return (score, pos, length)
     elif length_id == '0':
-        return (string[22:], score, length)
+        return (score, pos+16, length)
     else:
-        return (string[18:], score, length)
+        return (score, pos+12, length)
 
-def evaluate_literal(packet):
+def evaluate_literal(packet, pos):
     answer = ""
-    while packet[0] != '0':
+    while packet[pos] != '0':
         answer += packet[1:5]
-        packet = packet[5:]
+        pos += 5
     answer += packet[1:5]
-    packet = packet[5:]
-    return (packet, int(answer, 2))
+    pos += 5
+    return (pos, int(answer, 2))
 
 #Read input
 file = open("day16.txt", "r")
@@ -49,22 +49,15 @@ file.close()
 #Part 1
 score = 0
 length = 0
-while len(string) > 6:
-    (string, score, length) = getVersion(string, score, length)
+pos = 0
+while pos + 6 < len(string):
+    (score, pos, length) = getVersion(string, score, pos, length)
 
 print(f"Part 1: {score}")
 
 ###########################################################################################
 #Part 2
 
-
+#Calculate the value of the outermost packet
 # If the length type ID is 0, then the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet.
 # If the length type ID is 1, then the next 11 bits are a number that represents the number of sub-packets immediately contained by this packet.
-
-# Packets with type ID 0 are sum packets - their value is the sum of the values of their sub-packets. If they only have a single sub-packet, their value is the value of the sub-packet.
-# Packets with type ID 1 are product packets - their value is the result of multiplying together the values of their sub-packets. If they only have a single sub-packet, their value is the value of the sub-packet.
-# Packets with type ID 2 are minimum packets - their value is the minimum of the values of their sub-packets.
-# Packets with type ID 3 are maximum packets - their value is the maximum of the values of their sub-packets.
-# Packets with type ID 5 are greater than packets - their value is 1 if the value of the first sub-packet is greater than the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
-# Packets with type ID 6 are less than packets - their value is 1 if the value of the first sub-packet is less than the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
-# Packets with type ID 7 are equal to packets - their value is 1 if the value of the first sub-packet is equal to the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
