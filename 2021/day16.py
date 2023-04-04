@@ -34,9 +34,9 @@ def getVersion(packet, score, pos, length):
 def evaluate_literal(packet, pos):
     answer = ""
     while packet[pos] != '0':
-        answer += packet[1:5]
+        answer += packet[pos+1:pos+5]
         pos += 5
-    answer += packet[1:5]
+    answer += packet[pos+1:pos+5]
     pos += 5
     return (pos, int(answer, 2))
 
@@ -61,15 +61,16 @@ print(f"Part 1: {score}")
 #Return (pos, value)
 def evaluate_packet(packet, pos):
     #Exit condition
-    if pos + 11 < len(packet):
-        return 0
+    if pos + 11 >= len(packet):
+        return (pos, 0)
 
-    type_id = string[pos+3:pos+6]
+    type_id = int(string[pos+3:pos+6], 2)
+    print(f"Type id: {type_id}")
     length_id = string[pos+6]
     pos += 6
 
     #Top Level Packet is Literal
-    if type_id == '100':
+    if type_id == 4:
         (pos, value) = evaluate_literal(packet, pos)
         return (pos, value)
     #Next 15 bits 
@@ -78,7 +79,7 @@ def evaluate_packet(packet, pos):
         pos += 16
         score = 0
         while bits > 0 and pos < len(packet):
-            (newPos, newValue) = evaluatePacket(packet, pos)
+            (newPos, newValue) = evaluate_packet(packet, pos)
             if (newPos - pos) <= bits:
                 bits -= (newPos - pos)
                 score += newValue
@@ -89,11 +90,12 @@ def evaluate_packet(packet, pos):
         pos += 12
         score = 0
         for i in range(number):
-            (pos, newValue) = evaluatePacket(packet, pos)
+            (pos, newValue) = evaluate_packet(packet, pos)
             score += newValue
             if pos >= len(packet): break
         return (pos, score)
 
+print(string)
 print(evaluate_packet(string, 0))
 
 #Calculate the value of the outermost packet
