@@ -1,5 +1,11 @@
 from operator import add, mul, gt, lt, eq
-ops = (add, mul, lambda *x: min(x), lambda *x: max(x), None, gt, lt, eq)
+ops = (lambda *x: sum(x), lambda *x: multiply(x), lambda *x: min(x), lambda *x: max(x), None, gt, lt, eq)
+
+def multiply(x):
+    result = 1
+    for i in x:
+        result *= i
+    return result
 
 hex_to_bin = {
 '0': '0000','1': '0001','2': '0010','3': '0011',
@@ -58,6 +64,23 @@ print(f"Part 1: {score}")
 ###########################################################################################
 #Part 2
 
+def calc_score(li, type_id):
+    if type_id == 0:
+        return sum(li)
+    elif type_id == 1:
+        return multiply(li)
+    elif type_id == 2:
+        return min(li)
+    elif type_id == 3:
+        return max(li)
+    elif type_id == 5:
+        return gt(li[0], li[1])
+    elif type_id == 6:
+        return lt(li[0], li[1])
+    elif type_id == 7:
+        return eq(li[0], li[1])
+
+
 #Return (pos, value)
 def evaluate_packet(packet, pos):
     #Exit condition
@@ -83,7 +106,7 @@ def evaluate_packet(packet, pos):
                 bits -= (newPos - pos)
                 score.append(newValue)
             pos = newPos
-        return(pos, ops[type_id](*score))
+        return (pos, calc_score(score, type_id))
     else:
         number = int(packet[pos+1:pos+12], 2)
         pos += 12
@@ -92,7 +115,7 @@ def evaluate_packet(packet, pos):
             (pos, newValue) = evaluate_packet(packet, pos)
             score.append(newValue)
             if pos >= len(packet): break
-        return (pos, ops[type_id](*score))
+        return (pos, calc_score(score, type_id))
 
 answer = evaluate_packet(string, 0)[1]
 print(f"Part 2: {answer}")
