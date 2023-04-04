@@ -61,7 +61,7 @@ print(f"Part 1: {score}")
 #Return (pos, value)
 def evaluate_packet(packet, pos):
     #Exit condition
-    if pos + 11 >= len(packet):
+    if pos + 11 > len(packet):
         return (pos, 0)
 
     type_id = int(string[pos+3:pos+6], 2)
