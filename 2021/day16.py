@@ -58,6 +58,44 @@ print(f"Part 1: {score}")
 ###########################################################################################
 #Part 2
 
+#Return (pos, value)
+def evaluate_packet(packet, pos):
+    #Exit condition
+    if pos + 11 < len(packet):
+        return 0
+
+    type_id = string[pos+3:pos+6]
+    length_id = string[pos+6]
+    pos += 6
+
+    #Top Level Packet is Literal
+    if type_id == '100':
+        (pos, value) = evaluate_literal(packet, pos)
+        return (pos, value)
+    #Next 15 bits 
+    elif length_id == '0':
+        bits = int(packet[pos+1:pos+16], 2)
+        pos += 16
+        score = 0
+        while bits > 0 and pos < len(packet):
+            (newPos, newValue) = evaluatePacket(packet, pos)
+            if (newPos - pos) <= bits:
+                bits -= (newPos - pos)
+                score += newValue
+            pos = newPos
+        return(pos, score)
+    else:
+        number = int(packet[pos+1:pos+12], 2)
+        pos += 12
+        score = 0
+        for i in range(number):
+            (pos, newValue) = evaluatePacket(packet, pos)
+            score += newValue
+            if pos >= len(packet): break
+        return (pos, score)
+
+print(evaluate_packet(string, 0))
+
 #Calculate the value of the outermost packet
 # If the length type ID is 0, then the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet.
 # If the length type ID is 1, then the next 11 bits are a number that represents the number of sub-packets immediately contained by this packet.
