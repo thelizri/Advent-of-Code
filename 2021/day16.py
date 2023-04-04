@@ -65,7 +65,6 @@ def evaluate_packet(packet, pos):
         return (pos, 0)
 
     type_id = int(string[pos+3:pos+6], 2)
-    print(f"Type id: {type_id}")
     length_id = string[pos+6]
     pos += 6
 
@@ -77,26 +76,26 @@ def evaluate_packet(packet, pos):
     elif length_id == '0':
         bits = int(packet[pos+1:pos+16], 2)
         pos += 16
-        score = 0
+        score = []
         while bits > 0 and pos < len(packet):
             (newPos, newValue) = evaluate_packet(packet, pos)
             if (newPos - pos) <= bits:
                 bits -= (newPos - pos)
-                score += newValue
+                score.append(newValue)
             pos = newPos
-        return(pos, score)
+        return(pos, ops[type_id](*score))
     else:
         number = int(packet[pos+1:pos+12], 2)
         pos += 12
-        score = 0
+        score = []
         for i in range(number):
             (pos, newValue) = evaluate_packet(packet, pos)
-            score += newValue
+            score.append(newValue)
             if pos >= len(packet): break
-        return (pos, score)
+        return (pos, ops[type_id](*score))
 
-print(string)
-print(evaluate_packet(string, 0))
+answer = evaluate_packet(string, 0)[1]
+print(f"Part 2: {answer}")
 
 #Calculate the value of the outermost packet
 # If the length type ID is 0, then the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet.
