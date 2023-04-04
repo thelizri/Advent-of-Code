@@ -1,5 +1,4 @@
-from operator import add, mul, gt, lt, eq
-ops = (lambda *x: sum(x), lambda *x: multiply(x), lambda *x: min(x), lambda *x: max(x), None, gt, lt, eq)
+from operator import gt, lt, eq
 
 def multiply(x):
     result = 1
