@@ -1,14 +1,9 @@
-# Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
-# Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
-# Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
-# Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
-# Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
-
+# Limits
 # 12 Red, 13 Green, 14 Blue
 
 import re
 
-# The input text containing game data
+# Example input data used for debugging
 text = """
 Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
 Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
@@ -58,13 +53,19 @@ for match in matches:
     }
 
 the_sum = 0
+sum_of_power = 0
 for game_number, color_values in game_data.items():
+    part1 = True
     if color_values["blue"] > max_values["blue"]:
-        continue
-    if color_values["green"] > max_values["green"]:
-        continue
-    if color_values["red"] > max_values["red"]:
-        continue
-    the_sum += game_number
+        part1 = False
+    elif color_values["green"] > max_values["green"]:
+        part1 = False
+    elif color_values["red"] > max_values["red"]:
+        part1 = False
+    if part1:
+        the_sum += game_number
+    sum_of_power += color_values["blue"] * color_values["green"] * color_values["red"]
 
-print(the_sum)
+
+print("Part 1:", the_sum)
+print("Part 2:", sum_of_power)
