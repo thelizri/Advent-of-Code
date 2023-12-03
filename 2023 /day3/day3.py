@@ -57,7 +57,7 @@ def extract_numbers(row_id, row):
 for row_id, row in enumerate(grid):
     extract_numbers(row_id, row)
 
-print(part1)
+print("Part 1:", part1)
 
 part2 = 0
 
@@ -89,4 +89,4 @@ for row_id, row in enumerate(grid):
         if char == "*":
             is_gear(row_id, x)
 
-print(part2)
+print("Part 2:", part2)
