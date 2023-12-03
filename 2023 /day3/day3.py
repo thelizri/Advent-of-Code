@@ -58,3 +58,35 @@ for row_id, row in enumerate(grid):
     extract_numbers(row_id, row)
 
 print(part1)
+
+part2 = 0
+
+
+def gear_in_range_of_number(gear_row, gear_x, number_row, number_x, number):
+    length = len(number)
+    if gear_row >= number_row - 1 and gear_row <= number_row + 1:
+        if gear_x >= number_x - 1 and gear_x <= number_x + length:
+            return True
+    return False
+
+
+def is_gear(row_id, x):
+    numbers = []
+    global part2
+    for i in [-1, 0, 1]:
+        numbers_with_positions = extract_numbers_with_positions(grid[row_id + i])
+        for number, pos in numbers_with_positions:
+            # Check if number is within distance of gear
+            if gear_in_range_of_number(row_id, x, row_id + i, pos, number):
+                numbers.append(number)
+
+    if len(numbers) == 2:
+        part2 += int(numbers[0]) * int(numbers[1])
+
+
+for row_id, row in enumerate(grid):
+    for x, char in enumerate(row):
+        if char == "*":
+            is_gear(row_id, x)
+
+print(part2)
