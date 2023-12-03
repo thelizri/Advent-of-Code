@@ -12,6 +12,8 @@ text = """467..114..
 .664.598..
 """
 
+text = open("day3.txt").read()
+
 grid = text.splitlines()
 
 part1 = 0
