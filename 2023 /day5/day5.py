@@ -53,28 +53,39 @@ light_to_temperature = re.findall(pattern, text[5])
 temperature_to_humidity = re.findall(pattern, text[6])
 humidity_to_location = re.findall(pattern, text[7])
 
-locations = []
+seeds = [int(number) for number in seeds]
+seed_to_soil = [int(number) for number in seed_to_soil]
+soil_to_fertilizer = [int(number) for number in soil_to_fertilizer]
+fertilizer_to_water = [int(number) for number in fertilizer_to_water]
+water_to_light = [int(number) for number in water_to_light]
+light_to_temperature = [int(number) for number in light_to_temperature]
+temperature_to_humidity = [int(number) for number in temperature_to_humidity]
+humidity_to_location = [int(number) for number in humidity_to_location]
 
 
 def translator(number, map):
     for i in range(0, len(map), 3):
-        dest_start, source_start, length = int(map[i]), int(map[i + 1]), int(map[i + 2])
+        dest_start, source_start, length = map[i], map[i + 1], map[i + 2]
         if number in range(source_start, source_start + length):
             return dest_start + (number - source_start)
 
     return number
 
 
-for seed in seeds:
-    soil = translator(int(seed), seed_to_soil)
+def translate_seed_to_location(seed):
+    soil = translator(seed, seed_to_soil)
     fertilizer = translator(soil, soil_to_fertilizer)
     water = translator(fertilizer, fertilizer_to_water)
     light = translator(water, water_to_light)
     temperature = translator(light, light_to_temperature)
     humidity = translator(temperature, temperature_to_humidity)
     location = translator(humidity, humidity_to_location)
-    locations.append(location)
+    return location
 
 
-part1 = min(locations)
+part1 = float("inf")
+for seed in seeds:
+    location = translate_seed_to_location(seed)
+    part1 = min(part1, location)
+
 print("Part 1:", part1)
