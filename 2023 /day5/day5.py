@@ -1,4 +1,5 @@
 import re
+import math
 
 text = """seeds: 79 14 55 13
 
@@ -89,3 +90,17 @@ for seed in seeds:
     part1 = min(part1, location)
 
 print("Part 1:", part1)
+
+part2 = float("inf")
+for i in range(0, len(seeds), 2):
+    seed, length = seeds[i], seeds[i + 1]
+    sqrt = int(math.sqrt(length))
+    for j in range(seed, seed + length, sqrt):
+        location = translate_seed_to_location(j)
+        if location < part2:
+            part2 = location
+            for k in range(j - sqrt, j + sqrt):
+                location = translate_seed_to_location(k)
+                part2 = min(location, part2)
+
+print("Part 2:", part2)
