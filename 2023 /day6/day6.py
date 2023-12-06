@@ -4,7 +4,7 @@ import numpy as np
 text = """Time:      7  15   30
 Distance:  9  40  200""".splitlines()
 
-# text = open("day6.txt").read().splitlines()
+text = open("day6.txt").read().splitlines()
 
 pattern = re.compile(r"\d+")
 times = [int(number) for number in re.findall(pattern, text[0])]
@@ -41,5 +41,12 @@ for x, y in zip(times, distances):
     time += x
     record += y
 
-print(time)
-print(record)
+time = int(time)
+record = int(record)
+amount = 0
+for i in range(time):
+    distance = distance_travelled(i, time)
+    if distance > record:
+        amount += 1
+
+print("Part 2", amount)
