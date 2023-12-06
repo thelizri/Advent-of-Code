@@ -36,7 +36,7 @@ print("Part 1:", np.prod(part1))
 times = re.findall(pattern, text[0])
 distances = re.findall(pattern, text[1])
 
-time, record = 0, 0
+time, record = "", ""
 for x, y in zip(times, distances):
     time += x
     record += y
