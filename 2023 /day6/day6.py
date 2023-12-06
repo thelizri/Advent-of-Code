@@ -1,6 +1,5 @@
 import re
-import functools
-import operator
+import numpy as np
 
 text = """Time:      7  15   30
 Distance:  9  40  200""".splitlines()
@@ -32,4 +31,4 @@ for time, record in zip(times, distances):
             amount += 1
     part1.append(amount)
 
-print("Part 1:", functools.reduce(operator.mul, part1))
+print("Part 1:", np.prod(part1))
