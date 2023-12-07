@@ -96,3 +96,62 @@ for number, hand in enumerate(all_hands, 1):
     part1 += bid * number
 
 print("Part 1:", part1)
+
+cards = ["A", "K", "Q", "T", "9", "8", "7", "6", "5", "4", "3", "2", "J"]
+card_values = {card: value for value, card in enumerate(reversed(cards), 1)}
+
+
+def get_hand_ranking_joker(card_hand):
+    count = {}
+    for card in card_hand:
+        if card in count:
+            count[card] += 1
+        else:
+            count[card] = 1
+
+    if "J" in count:
+        max_key, max = "J", 0
+        for key, value in count.items():
+            if key == "J":
+                continue
+            if value >= max:
+                max = value
+                max_key = key
+        if max_key != "J":
+            count[max_key] += count["J"]
+            del count["J"]
+    if len(count) == 1:
+        return hand_rankings["five_kind"]
+    elif len(count) == 2:
+        # Four of a Kind or Full House
+        if 4 in count.values():
+            return hand_rankings["four_kind"]
+        else:
+            return hand_rankings["house"]
+    elif len(count) == 3:
+        if 3 in count.values():
+            return hand_rankings["three_kind"]
+        else:
+            return hand_rankings["two_pair"]
+    elif len(count) == 4:
+        return hand_rankings["one_pair"]
+    else:
+        return hand_rankings["high_card"]
+
+
+all_hands = []
+
+for row in text:
+    card_hand, bid = row.split()
+    bid = int(bid)
+    hand_rank = get_hand_ranking_joker(card_hand)
+    all_hands.append((card_hand, bid, hand_rank))
+
+part2 = 0
+all_hands.sort(key=functools.cmp_to_key(compare_hands))
+
+for number, hand in enumerate(all_hands, 1):
+    _, bid, _ = hand
+    part2 += bid * number
+
+print("Part 2:", part2)
