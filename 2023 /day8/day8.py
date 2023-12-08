@@ -1,3 +1,5 @@
+import numpy as np
+
 (
     instructions,
     edges_str,
@@ -27,19 +29,19 @@ for edge in edges:
     node_edges_map[node] = node_edges
 
 
-node = "AAA"
-part1 = None
-steps = 0
-while part1 is None:
-    for instr in instructions:
-        steps += 1
-        left, right = node_edges_map[node]
-        if instr == "L":
-            node = left
-        else:
-            node = right
-        if node == "ZZZ":
-            part1 = steps
-            break
+def get_distance(node="AAA"):
+    node = "AAA"
+    steps = 0
+    while True:
+        for instr in instructions:
+            steps += 1
+            left, right = node_edges_map[node]
+            if instr == "L":
+                node = left
+            else:
+                node = right
+            if node == "ZZZ":
+                return steps
 
-print("Part 1:", steps)
+
+print("Part 1:", get_distance())
