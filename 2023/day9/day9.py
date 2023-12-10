@@ -29,20 +29,33 @@ def is_all_zero(sequence):
     return True
 
 
-def get_difference(sequence):
+def get_next(sequence):
     differences = sequence_of_differences(sequence)
     if is_all_zero(differences):
         return 0
     else:
-        return differences[-1] + get_difference(differences)
+        return differences[-1] + get_next(differences)
+
+
+def get_prev(sequence):
+    differences = sequence_of_differences(sequence)
+    if is_all_zero(differences):
+        return 0
+    else:
+        return differences[0] - get_prev(differences)
 
 
 part1 = 0
+part2 = 0
 for row in text:
     # Convert to numbers
     row_of_numbers = [int(number) for number in re.findall(pattern, row)]
-    difference = get_difference(row_of_numbers)
-    next_number = row_of_numbers[-1] + difference
+    next = get_next(row_of_numbers)
+    next_number = row_of_numbers[-1] + next
     part1 += next_number
+    prev = get_prev(row_of_numbers)
+    prev_number = row_of_numbers[0] - prev
+    part2 += prev_number
 
 print("Part 1:", part1)
+print("Part 2:", part2)
