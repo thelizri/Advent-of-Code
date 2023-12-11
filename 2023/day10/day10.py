@@ -39,11 +39,11 @@ def get_char(position):
     return input[y][x]
 
 
-def part1(position, direction):
+def get_trail_length(position, direction):
     count = 0
     while True:
-        position = update_position(position, direction)
         count += 1
+        position = update_position(position, direction)
         char = get_char(position)
         if char == "S":
             return count
@@ -55,7 +55,7 @@ def part1(position, direction):
 position = find_starting_position(input)
 directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 for dir in directions:
-    count = part1(position, dir)
+    count = get_trail_length(position, dir)
     if count != -1:
         print("Part 1:", math.ceil(count / 2))
         break
