@@ -1,6 +1,8 @@
 import math
 
-input = """..F7.
+input = """-----
+..F..
+..F7.
 .FJ|.
 SJ.L7
 |F--J
@@ -40,22 +42,38 @@ def get_char(position):
 
 
 def get_trail_length(position, direction):
-    count = 0
+    count, trail = 0, set()
     while True:
         count += 1
         position = update_position(position, direction)
+        trail.add(position)
         char = get_char(position)
         if char == "S":
-            return count
+            return count, trail
         if char == ".":
-            return -1
+            return -1, None
         direction = next_direction(char, direction)
 
 
 position = find_starting_position(input)
 directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+trail = None
 for dir in directions:
-    count = get_trail_length(position, dir)
+    count, trail = get_trail_length(position, dir)
     if count != -1:
         print("Part 1:", math.ceil(count / 2))
         break
+
+# Replace all pipes outside the loop with #
+grid = []
+for r, row in enumerate(input):
+    new_row = []
+    for c, ch in enumerate(row):
+        if (r, c) in trail or ch == ".":
+            new_row.append(ch)  # Keep the character if it's in the trail or a period
+        else:
+            new_row.append("#")  # Replace '|' with '#' otherwise
+    grid.append("".join(new_row))
+
+
+print("\n".join(grid))
