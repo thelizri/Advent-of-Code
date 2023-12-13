@@ -24,51 +24,58 @@ inputs = open("day13.txt").read().split("\n\n")
 # Horizontally -> Add up rows above * 100
 
 
-def horizontal_reflection(grid):
+def find_horizontal_reflection_line(grid):
     rows = grid.splitlines()
-    length = len(rows)
-    for r, (a, b) in enumerate(zip(rows[:-1], rows[1:])):
-        if a == b:
-            # Double check
-            n = min(r + 1, length - r - 1)
-            cond = True
-            for m in range(1, n):
-                a_pos, b_pos = r - m, r + 1 + m
-                if rows[a_pos] != rows[b_pos]:
-                    cond = False
+    total_rows = len(rows)
+    for row_index, (upper_row, lower_row) in enumerate(zip(rows[:-1], rows[1:])):
+        if upper_row == lower_row:
+            # Check for a valid reflection line
+            max_check_range = min(row_index + 1, total_rows - row_index - 1)
+            is_reflection_line = True
+            for offset in range(1, max_check_range):
+                above_row_index, below_row_index = (
+                    row_index - offset,
+                    row_index + 1 + offset,
+                )
+                if rows[above_row_index] != rows[below_row_index]:
+                    is_reflection_line = False
                     break
-            if cond:
-                return (r + 1) * 100
+            if is_reflection_line:
+                return (row_index + 1) * 100
 
 
-def vertical_reflection(grid):
+def find_vertical_reflection_line(grid):
     rows = grid.splitlines()
-    length = len(rows[0])
-    for c in range(length - 1):
-        column_a = [row[c] for row in rows]
-        column_b = [row[c + 1] for row in rows]
-        if column_a == column_b:
-            # Double check
-            n = min(c + 1, length - c - 1)
-            cond = True
-            for m in range(1, n):
-                a_pos, b_pos = c - m, c + 1 + m
-                column_a = [row[a_pos] for row in rows]
-                column_b = [row[b_pos] for row in rows]
-                if column_a != column_b:
-                    cond = False
+    row_length = len(rows[0])
+    for column_index in range(row_length - 1):
+        left_column = [row[column_index] for row in rows]
+        right_column = [row[column_index + 1] for row in rows]
+        if left_column == right_column:
+            # Check for a valid reflection line
+            max_check_range = min(column_index + 1, row_length - column_index - 1)
+            is_reflection_line = True
+            for offset in range(1, max_check_range):
+                left_column_index, right_column_index = (
+                    column_index - offset,
+                    column_index + 1 + offset,
+                )
+                left_column = [row[left_column_index] for row in rows]
+                right_column = [row[right_column_index] for row in rows]
+                if left_column != right_column:
+                    is_reflection_line = False
                     break
-            if cond:
-                return c + 1
+            if is_reflection_line:
+                return column_index + 1
 
 
-total_sum = 0
-for input in inputs:
-    number = horizontal_reflection(input)
-    if number:
-        total_sum += number
+reflection_sum = 0
+for grid in inputs:
+    reflection_line = find_horizontal_reflection_line(grid)
+    if reflection_line:
+        reflection_sum += reflection_line
     else:
-        number = vertical_reflection(input)
-        if number:
-            total_sum += number
-print(total_sum)
+        reflection_line = find_vertical_reflection_line(grid)
+        if reflection_line:
+            reflection_sum += reflection_line
+
+print(reflection_sum)
