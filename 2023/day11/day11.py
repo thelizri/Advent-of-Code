@@ -9,7 +9,7 @@ input_data = """...#......
 .......#..
 #...#.....""".splitlines()
 
-# input_data = open("day11.txt").read().splitlines()
+input_data = open("day11.txt").read().splitlines()
 
 # Convert the input data into a list of lists for easy manipulation
 grid = [list(row) for row in input_data]
@@ -30,11 +30,12 @@ for r, row in enumerate(grid):
             galaxies_p1[count] = (r, c)
             count += 1
 
-copy = galaxies_p1.copy()
+galaxies_p2 = galaxies_p1.copy()
 
 
-def expand_rows_columns(galaxies, number=1):
+def expand_rows_columns(galaxies, number=2):
     # Increase rows
+    number -= 1
     for r, row in enumerate(empty_rows):
         for pos in range(1, count):
             y, x = galaxies[pos]
@@ -61,5 +62,5 @@ def calc_sum(galaxies):
 
 expand_rows_columns(galaxies_p1)
 print("Part 1:", calc_sum(galaxies_p1))
-expand_rows_columns(copy, 10)
-print("Part 2:", calc_sum(copy))
+expand_rows_columns(galaxies_p2, 1000_000)
+print("Part 2:", calc_sum(galaxies_p2))
