@@ -24,7 +24,7 @@ inputs = open("day13.txt").read().split("\n\n")
 # Horizontally -> Add up rows above * 100
 
 
-def find_horizontal_reflection_line(grid):
+def find_horizontal_reflection_line(grid, previous):
     rows = grid.splitlines()
     total_rows = len(rows)
     for row_index, (upper_row, lower_row) in enumerate(zip(rows[:-1], rows[1:])):
@@ -41,10 +41,14 @@ def find_horizontal_reflection_line(grid):
                     is_reflection_line = False
                     break
             if is_reflection_line:
-                return (row_index + 1) * 100
+                result = (row_index + 1) * 100
+                if previous and previous != result:
+                    return result
+                elif not previous:
+                    return result
 
 
-def find_vertical_reflection_line(grid):
+def find_vertical_reflection_line(grid, previous):
     rows = grid.splitlines()
     row_length = len(rows[0])
     for column_index in range(row_length - 1):
@@ -65,17 +69,54 @@ def find_vertical_reflection_line(grid):
                     is_reflection_line = False
                     break
             if is_reflection_line:
-                return column_index + 1
+                result = column_index + 1
+                if previous and previous != result:
+                    return result
+                elif not previous:
+                    return result
 
 
-reflection_sum = 0
-for grid in inputs:
-    reflection_line = find_horizontal_reflection_line(grid)
+def find_reflection_line(grid, previous=None):
+    reflection_line = find_horizontal_reflection_line(grid, previous)
     if reflection_line:
-        reflection_sum += reflection_line
+        return reflection_line
     else:
-        reflection_line = find_vertical_reflection_line(grid)
+        reflection_line = find_vertical_reflection_line(grid, previous)
         if reflection_line:
-            reflection_sum += reflection_line
+            return reflection_line
 
-print(reflection_sum)
+
+previous_reflections = {}
+reflection_sum = 0
+for g, grid in enumerate(inputs):
+    reflection_line = find_reflection_line(grid)
+    if reflection_line:
+        previous_reflections[g] = reflection_line
+        reflection_sum += reflection_line
+
+print("Part 1:", reflection_sum)
+
+newline = "\n"
+reflection_sum = 0
+for g, grid in enumerate(inputs):
+    found_reflection = False
+    for c, ch in enumerate(grid):
+        if ch not in "#.S":
+            continue
+        if ch == "S":
+            print("S = ", c)
+        if ch == "#":
+            li = list(grid)
+            li[c] = "."
+            modified_grid = "".join(li)
+        else:
+            li = list(grid)
+            li[c] = "#"
+            modified_grid = "".join(li)
+        reflection_line = find_reflection_line(modified_grid, previous_reflections[g])
+        if reflection_line and reflection_line != previous_reflections[g]:
+            reflection_sum += reflection_line
+            found_reflection = True
+            break
+
+print("Part 2:", reflection_sum)
