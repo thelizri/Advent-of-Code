@@ -9,7 +9,7 @@ O.#..O.#.#
 #....###..
 #OO..#....""".splitlines()
 
-# input = open("day14.txt").read().splitlines()
+input = open("day14.txt").read().splitlines()
 
 
 def parse_input(input_string):
@@ -123,22 +123,24 @@ print("Part 1:", load)
 def part2():
     grid = parse_input(input)
     states = set(grid_to_string(grid))
+    states_to_index = {grid_to_string(grid): 0}
 
-    cycle_length = 0
+    cycles = 0
+    cycle_length = -1
     while True:
         grid = cycle(grid)
-        cycle_length += 1
+        cycles += 1
 
         current_state = grid_to_string(grid)
         if current_state in states:
+            cycle_length = cycles - states_to_index[current_state]
             break
         else:
             states.add(current_state)
+            states_to_index[current_state] = cycles
 
-    print(cycle_length)
-    print("load:", calc_load(grid))
-    remaining_cycles = 1_000_000_000 % cycle_length
-    for _ in range(remaining_cycles + 1):
+    remaining_cycles = (1_000_000_000 - cycles) % cycle_length
+    for _ in range(remaining_cycles):
         grid = cycle(grid)
 
     load = calc_load(grid)
@@ -146,3 +148,5 @@ def part2():
 
 
 part2()
+
+# Beginning state, Cycle state, Cycle length
