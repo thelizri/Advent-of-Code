@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 input = """???.### 1,1,3
 .??..??...?##. 1,1,3
 ?#?#?#?#?#?#?#? 1,3,1,6
@@ -8,6 +10,7 @@ input = """???.### 1,1,3
 input = open("day12.txt").read().splitlines()
 
 
+@lru_cache(maxsize=None)
 def count(arrangement, condition, contiguous=False):
     if not arrangement:
         if not condition:
@@ -49,4 +52,15 @@ def part1():
     print("Part 1:", total)
 
 
+def part2():
+    total = 0
+    for row in input:
+        record, condition = row.split(" ")
+        condition = tuple([int(number) for number in condition.split(",")])
+        total += count((record + "?") * 4 + record, condition * 5)
+
+    print("Part 2:", total)
+
+
 part1()
+part2()
