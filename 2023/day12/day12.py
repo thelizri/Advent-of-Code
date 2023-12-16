@@ -5,10 +5,14 @@ input = """???.### 1,1,3
 ????.######..#####. 1,6,5
 ?###???????? 3,2,1""".splitlines()
 
+input = open("day12.txt").read().splitlines()
 
-def count(arrangement, condition):
+
+def count(arrangement, condition, contiguous=False):
     if not arrangement:
         if not condition:
+            return 1
+        elif len(condition) == 1 and condition[0] == 0:
             return 1
         else:
             return 0
@@ -18,17 +22,18 @@ def count(arrangement, condition):
         else:
             return 1
 
+    (num, *rest) = condition
     result = 0
-    if arrangement[0] in ".?":
-        (num, *rest) = condition
+    if arrangement[0] in ".?" and not contiguous:
         if num == 0:
             result += count(arrangement[1:], condition[1:])
         else:
             result += count(arrangement[1:], condition)
 
     if arrangement[0] in "#?":
-        (num, *rest) = condition
-        if num > 0:
+        if num > 1:
+            result += count(arrangement[1:], (num - 1, *rest), True)
+        elif num == 1:
             result += count(arrangement[1:], (num - 1, *rest))
 
     return result
@@ -39,9 +44,7 @@ def part1():
     for row in input:
         record, condition = row.split(" ")
         condition = tuple([int(number) for number in condition.split(",")])
-        c = count(record, condition)
-        print(c)
-        total += c
+        total += count(record, condition)
 
     print("Part 1:", total)
 
