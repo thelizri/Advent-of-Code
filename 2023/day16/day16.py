@@ -1,4 +1,4 @@
-from functools import lru_cache
+from collections import deque
 
 input = r""".|...\....
 |.-.\.....
@@ -13,6 +13,8 @@ input = r""".|...\....
 """.splitlines()
 
 input = open("day16.txt").read().splitlines()
+
+q = deque()
 
 dir = {"U": (-1, 0), "D": (1, 0), "R": (0, 1), "L": (0, -1)}
 
@@ -61,11 +63,7 @@ def outofbounds(pos):
     return pos[0] < 0 or pos[0] >= max_y or pos[1] < 0 or pos[1] >= max_x
 
 
-@lru_cache(maxsize=None)
 def move(pos, previous_direction):
-    if outofbounds(pos):
-        return []
-
     tile = input[pos[0]][pos[1]]
     split = False
     if tile == ".":
@@ -80,41 +78,44 @@ def move(pos, previous_direction):
         new_direction = mirror(tile, previous_direction)
         if new_direction is None:
             new_direction = previous_direction
-    result = []
+
     if split:
         for d in new_direction:
             new_pos = (pos[0] + d[0], pos[1] + d[1])
-            result.append((new_pos, d))
+            q.append((new_pos, d))
     else:
         new_pos = (pos[0] + new_direction[0], pos[1] + new_direction[1])
-        result.append((new_pos, new_direction))
-
-    return result
+        q.append((new_pos, new_direction))
 
 
-def part1():
-    energized_tiles = set()  # (y, x)
-    pos, direction = (0, 0), dir["R"]
-    energized_tiles.add(pos)
+def calc(pos=(0, 0), direction=dir["R"]):
+    q.clear()
+    seen_states = set()
+    q.append((pos, direction))
+    while q:
+        pos, direction = q.popleft()
+        if outofbounds(pos):
+            continue
+        if (pos, direction) in seen_states:
+            continue
+        seen_states.add((pos, direction))
+        move(pos, direction)
 
-    pos_direction = move(pos, direction)
+    tiles = set()
+    for pos, _ in seen_states:
+        tiles.add(pos)
 
-    cycles = 0
-    while pos_direction:
-        new_pos_direction = []
-        new_tiles = False
-        for p, d in pos_direction:
-            if p not in energized_tiles and not outofbounds(p):
-                energized_tiles.add(p)
-                new_tiles = True
-            new_pos_direction.extend(move(p, d))
-        if not new_tiles:
-            cycles += 1
-        if cycles > 10:
-            break
-        pos_direction = new_pos_direction
-
-    print("Part 1:", len(energized_tiles))
+    return len(tiles)
 
 
-part1()
+print("Part 1:", calc())
+
+# Part 2
+result = []
+for x in range(max_x):
+    result.append(calc((0, x), dir["D"]))
+    result.append(calc((max_y - 1, x), dir["U"]))
+for y in range(max_y):
+    result.append(calc((y, 0), dir["R"]))
+    result.append(calc((y, max_x - 1), dir["L"]))
+print("Part 2:", max(result))
