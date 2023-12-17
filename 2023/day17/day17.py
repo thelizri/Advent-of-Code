@@ -18,39 +18,85 @@ input = open("day17.txt").read().splitlines()
 
 grid = [[int(number) for number in row] for row in input]
 
+
 # Heat, steps, y, x, dy, dx
-pq = [(0, 0, 0, 0, 0, 0)]
+def part1():
+    pq = [(0, 0, 0, 0, 0, 0)]
 
-seen = set()
+    seen = set()
 
-while pq:
-    heat, steps, y, x, dy, dx = heappop(pq)
+    while pq:
+        heat, steps, y, x, dy, dx = heappop(pq)
 
-    if y == len(grid) - 1 and x == len(grid[0]) - 1:
-        print("Part 1:", heat)
-        break
+        if y == len(grid) - 1 and x == len(grid[0]) - 1 and steps < 4:
+            print("Part 1:", heat)
+            break
 
-    if y < 0 or y >= len(grid) or x < 0 or x >= len(grid[0]):
-        continue
-
-    if steps > 3:
-        continue
-
-    if (y, x, dy, dx, steps) in seen:
-        continue
-
-    seen.add((y, x, dy, dx, steps))
-
-    ny, nx = y + dy, x + dx
-    if ny >= 0 and ny < len(grid) and nx >= 0 and nx < len(grid[0]):
-        heappush(pq, (heat + grid[ny][nx], steps + 1, ny, nx, dy, dx))
-
-    for ndy, ndx in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-        if ndy == -dy and ndx == -dx:
-            continue
-        if ndy == dy and ndx == dx:
+        if y < 0 or y >= len(grid) or x < 0 or x >= len(grid[0]):
             continue
 
-        ny, nx = y + ndy, x + ndx
+        if steps > 3:
+            continue
+
+        if (y, x, dy, dx, steps) in seen:
+            continue
+
+        seen.add((y, x, dy, dx, steps))
+
+        if steps >= 1:
+            ny, nx = y + dy, x + dx
+            if ny >= 0 and ny < len(grid) and nx >= 0 and nx < len(grid[0]):
+                heappush(pq, (heat + grid[ny][nx], steps + 1, ny, nx, dy, dx))
+
+        for ndy, ndx in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            if ndy == -dy and ndx == -dx:
+                continue
+            if ndy == dy and ndx == dx:
+                continue
+
+            ny, nx = y + ndy, x + ndx
+            if ny >= 0 and ny < len(grid) and nx >= 0 and nx < len(grid[0]):
+                heappush(pq, (heat + grid[ny][nx], 1, ny, nx, ndy, ndx))
+
+
+def part2():
+    pq = [(0, 0, 0, 0, 0, 0)]
+
+    seen = set()
+
+    while pq:
+        heat, steps, y, x, dy, dx = heappop(pq)
+
+        if y == len(grid) - 1 and x == len(grid[0]) - 1 and steps >= 4 and steps <= 10:
+            print("Part 2:", heat)
+            break
+
+        if y < 0 or y >= len(grid) or x < 0 or x >= len(grid[0]):
+            continue
+
+        if steps > 10:
+            continue
+
+        if (y, x, dy, dx, steps) in seen:
+            continue
+
+        seen.add((y, x, dy, dx, steps))
+
+        ny, nx = y + dy, x + dx
         if ny >= 0 and ny < len(grid) and nx >= 0 and nx < len(grid[0]):
-            heappush(pq, (heat + grid[ny][nx], 1, ny, nx, ndy, ndx))
+            heappush(pq, (heat + grid[ny][nx], steps + 1, ny, nx, dy, dx))
+
+        if steps >= 4 or (dy, dx) == (0, 0):
+            for ndy, ndx in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                if ndy == -dy and ndx == -dx:
+                    continue
+                if ndy == dy and ndx == dx:
+                    continue
+
+                ny, nx = y + ndy, x + ndx
+                if ny >= 0 and ny < len(grid) and nx >= 0 and nx < len(grid[0]):
+                    heappush(pq, (heat + grid[ny][nx], 1, ny, nx, ndy, ndx))
+
+
+part1()
+part2()
