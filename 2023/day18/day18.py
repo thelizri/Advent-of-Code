@@ -20,6 +20,7 @@ input = open("day18.txt").read().splitlines()
 pos = (0, 0)
 terrain = set()
 terrain.add(pos)
+vertices = []
 
 
 def move(pos, direction, steps):
@@ -42,58 +43,54 @@ def move(pos, direction, steps):
         return (x, y + steps)
 
 
-def print_map():
-    max_x = max(terrain, key=lambda x: x[0])[0]
-    max_y = max(terrain, key=lambda x: x[1])[1]
-    print("Max:", max_x, max_y)
-    for y in range(max_y + 1):
-        for x in range(max_x + 1):
-            if (x, y) in terrain:
-                print("#", end="")
-            else:
-                print(".", end="")
-        print()
-
-
-def write_map_to_file(filename):
-    min_x = min(terrain, key=lambda x: x[0])[0]
-    min_y = min(terrain, key=lambda x: x[1])[1]
-    max_x = max(terrain, key=lambda x: x[0])[0]
-    max_y = max(terrain, key=lambda x: x[1])[1]
-
-    with open(filename, "w") as file:
-        file.write(f"Max: {max_x} {max_y}\n")
-        for y in range(min_y, max_y + 1):
-            file.write(str(y) + " ")
-            for x in range(min_x, max_x + 1):
-                if (x, y) in terrain:
-                    file.write("#")
-                else:
-                    file.write(".")
-            file.write("\n")
-
-
-def flood_fill(pos):
-    queue = deque()
-    queue.append(pos)
-    while queue:
-        x, y = queue.popleft()
-        if (x, y) not in terrain:
-            terrain.add((x, y))
-            queue.append((x + 1, y))
-            queue.append((x - 1, y))
-            queue.append((x, y + 1))
-            queue.append((x, y - 1))
-    return len(terrain)
-
-
 for row in input:
     instruction, number, color = row.split(" ")
     number = int(number)
 
     pos = move(pos, instruction, number)
+    vertices.append(pos)
 
-# Didn't know where to start flood fill, so I printed the map to a file and looked at it. It's a hacky solution, but it works.
-# There's a math formula for calculating the interior area of a polygon, that could also be used.
-length = flood_fill((1, 0))
-print("Part 1:", length)
+
+def shoelace_area(vertices):
+    """
+    Calculate the area of a polygon using the Shoelace formula.
+
+    :param vertices: A list of tuples, where each tuple represents the x and y coordinates of a vertex.
+                     The vertices should be ordered clockwise or counterclockwise.
+    :return: The area of the polygon.
+    """
+    n = len(vertices)
+    area = 0
+
+    # Sum over each edge of the polygon
+    for i in range(n):
+        x1, y1 = vertices[i]
+        x2, y2 = vertices[(i + 1) % n]  # % n to loop back to the first vertex
+        area += x1 * y2 - x2 * y1
+
+    return abs(area) / 2
+
+
+interior_area = shoelace_area(vertices)
+total_area = interior_area + len(terrain) / 2 + 1
+print("Part 1:", int(total_area))
+
+# R, D, L, U
+directions = {"0": (1, 0), "1": (0, 1), "2": (-1, 0), "3": (0, -1)}
+
+# Part 2
+border = 0
+vertices = []
+pos = (0, 0)
+for row in input:
+    _, _, hexacode = row.split(" ")
+    dx, dy = directions[hexacode[-2]]
+    length = int(hexacode[2:-2], 16)
+    border += length
+
+    pos = (pos[0] + dx * length, pos[1] + dy * length)
+    vertices.append(pos)
+
+interior_area = shoelace_area(vertices)
+total_area = interior_area + border / 2 + 1
+print("Part 2:", int(total_area))
