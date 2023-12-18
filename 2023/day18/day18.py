@@ -94,3 +94,5 @@ for row in input:
 interior_area = shoelace_area(vertices)
 total_area = interior_area + border / 2 + 1
 print("Part 2:", int(total_area))
+
+# Don't know why I have to add 1 to the area, but it works
