@@ -17,48 +17,20 @@ U 2 (#7a21e3)""".splitlines()
 
 input = open("day18.txt").read().splitlines()
 
-pos = (0, 0)
-terrain = set()
-terrain.add(pos)
-vertices = []
-
 
 def move(pos, direction, steps):
     x, y = pos
     if direction == "R":
-        for i in range(1, steps + 1):
-            terrain.add((x + i, y))
         return (x + steps, y)
     elif direction == "L":
-        for i in range(1, steps + 1):
-            terrain.add((x - i, y))
         return (x - steps, y)
     elif direction == "U":
-        for i in range(1, steps + 1):
-            terrain.add((x, y - i))
         return (x, y - steps)
     elif direction == "D":
-        for i in range(1, steps + 1):
-            terrain.add((x, y + i))
         return (x, y + steps)
 
 
-for row in input:
-    instruction, number, color = row.split(" ")
-    number = int(number)
-
-    pos = move(pos, instruction, number)
-    vertices.append(pos)
-
-
 def shoelace_area(vertices):
-    """
-    Calculate the area of a polygon using the Shoelace formula.
-
-    :param vertices: A list of tuples, where each tuple represents the x and y coordinates of a vertex.
-                     The vertices should be ordered clockwise or counterclockwise.
-    :return: The area of the polygon.
-    """
     n = len(vertices)
     area = 0
 
@@ -71,8 +43,20 @@ def shoelace_area(vertices):
     return abs(area) / 2
 
 
+# Part 1
+pos = (0, 0)
+vertices = []
+border = 0
+for row in input:
+    direction, steps, color = row.split(" ")
+    steps = int(steps)
+    border += steps
+
+    pos = move(pos, direction, steps)
+    vertices.append(pos)
+
 interior_area = shoelace_area(vertices)
-total_area = interior_area + len(terrain) / 2 + 1
+total_area = interior_area + border / 2 + 1
 print("Part 1:", int(total_area))
 
 # R, D, L, U
