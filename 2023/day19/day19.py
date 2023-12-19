@@ -86,8 +86,44 @@ def parse_dictionaries(text):
     return records
 
 
-for dictionary in parse_dictionaries(dictionaries_text):
-    print(dictionary)
+def get_accepted():
+    rules = parse_rules(rules_text)
+    dictionaries = parse_dictionaries(dictionaries_text)
+    accepted = []
 
-for key, conditions in parse_rules(rules_text).items():
-    print(key, conditions)
+    for dictionary in dictionaries:
+        rule = rules["in"]
+        while rule is not None:
+            for condition in rule:
+                passed = False
+                if condition["comparison"] == "<":
+                    if dictionary[condition["type"]] < condition["value"]:
+                        passed = True
+                elif condition["comparison"] == ">":
+                    if dictionary[condition["type"]] > condition["value"]:
+                        passed = True
+                else:
+                    passed = True
+
+                if passed:
+                    target = condition["targets"]
+                    if target == "R":
+                        rule = None
+                    elif target == "A":
+                        accepted.append(dictionary)
+                        rule = None
+                    else:
+                        rule = rules[target]
+                    break
+    return accepted
+
+
+def part1():
+    total = 0
+    for accepted in get_accepted():
+        for value in accepted.values():
+            total += value
+    return total
+
+
+print("Part 1:", part1())
