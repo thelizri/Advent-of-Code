@@ -21,6 +21,8 @@ hdj{m>838:A,pv}
 {x=2127,m=1623,a=2188,s=1013}
 """
 
+text = open("day19.txt").read()
+
 rules_text, dictionaries_text = text.split("\n\n")
 
 
