@@ -132,3 +132,52 @@ def part1():
 
 
 print("Part 1:", part1())
+
+rules = parse_rules(rules_text)
+
+
+def count(range, rule_name="in"):
+    if rule_name == "A":
+        total = 1
+        for low, high in range.values():
+            total *= high - low + 1
+        return total
+    if rule_name == "R":
+        return 0
+
+    rule = rules[rule_name]
+    total = 0
+    for condition in rule:
+        if condition["comparison"] == "<":
+            letter = condition["type"]
+            low, high = range[letter]
+            if high < condition["value"]:
+                copy = range.copy()
+                total += count(copy, condition["targets"])
+                break
+            elif low < condition["value"]:
+                copy = range.copy()
+                copy[letter] = (low, condition["value"] - 1)
+                range[letter] = (condition["value"], high)
+                total += count(copy, condition["targets"])
+        elif condition["comparison"] == ">":
+            letter = condition["type"]
+            low, high = range[letter]
+            if low > condition["value"]:
+                copy = range.copy()
+                total += count(copy, condition["targets"])
+                break
+            elif high > condition["value"]:
+                copy = range.copy()
+                copy[letter] = (condition["value"] + 1, high)
+                range[letter] = (low, condition["value"])
+                total += count(copy, condition["targets"])
+        else:
+            copy = range.copy()
+            total += count(copy, condition["targets"])
+
+    return total
+
+
+part2 = count({"x": (1, 4000), "m": (1, 4000), "a": (1, 4000), "s": (1, 4000)})
+print("Part 2:", part2)
