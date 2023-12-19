@@ -93,16 +93,19 @@ def get_accepted():
     dictionaries = parse_dictionaries(dictionaries_text)
     accepted = []
 
+    operators = {
+        ">": int.__gt__,
+        "<": int.__lt__,
+    }
+
     for dictionary in dictionaries:
         rule = rules["in"]
         while rule is not None:
             for condition in rule:
                 passed = False
-                if condition["comparison"] == "<":
-                    if dictionary[condition["type"]] < condition["value"]:
-                        passed = True
-                elif condition["comparison"] == ">":
-                    if dictionary[condition["type"]] > condition["value"]:
+                if condition["comparison"] is not None:
+                    op = operators[condition["comparison"]]
+                    if op(dictionary[condition["type"]], condition["value"]):
                         passed = True
                 else:
                     passed = True
