@@ -1,4 +1,5 @@
 import sys
+from collections import deque
 
 input = """#.#####################
 #.......#########...###
@@ -73,7 +74,7 @@ print("Part 1:", result)
 
 # Part 2
 def prune_grid():
-    points = set()
+    points = []
     for y, row in enumerate(input):
         for x, c in enumerate(row):
             if c == "#":
@@ -86,10 +87,56 @@ def prune_grid():
                     continue
                 outgoing += 1
             if outgoing > 2:
-                points.add((y, x))
+                points.append((y, x))
     return points
 
 
+def find_adjacent_points(y, x, points):
+    points = points.copy()
+    points.remove((y, x))
+    adjacent = []
+    queue = deque([(y, x, 0)])
+    visited = set()
+    while queue:
+        y, x, steps = queue.popleft()
+        visited.add((y, x))
+        for ny, nx in [(y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)]:
+            if ny < 0 or ny >= len(input) or nx < 0 or nx >= len(input[0]):
+                continue
+            if input[ny][nx] == "#":
+                continue
+            if (ny, nx) in points:
+                adjacent.append((ny, nx, steps + 1))
+            if (ny, nx) not in visited and (ny, nx) not in points:
+                queue.append((ny, nx, steps + 1))
+    return adjacent
+
+
 points = prune_grid()
-print(len(points))
-print(points)
+points.append(start)
+points.append(end)
+graph = {}
+for pos in points:
+    graph[pos] = find_adjacent_points(pos[0], pos[1], points)
+
+
+def depth_first_search(graph, start, end, length, visited=set()):
+    if start == end:
+        return length
+
+    visited.add(start)
+
+    max_steps = 0
+    for y, x, steps in graph[start]:
+        if (y, x) not in visited:
+            max_steps = max(
+                max_steps,
+                depth_first_search(graph, (y, x), end, length + steps, visited),
+            )
+
+    visited.remove(start)
+    return max_steps
+
+
+part2 = depth_first_search(graph, start, end, 0, set())
+print("Part 2:", part2)
