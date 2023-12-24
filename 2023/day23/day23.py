@@ -120,21 +120,21 @@ for pos in points:
     graph[pos] = find_adjacent_points(pos[0], pos[1], points)
 
 
-def depth_first_search(graph, start, end, length, visited=set()):
-    if start == end:
+def depth_first_search(graph, current, end, length, visited=set()):
+    if current == end:
         return length
 
-    visited.add(start)
+    visited.add(current)
 
     max_steps = 0
-    for y, x, steps in graph[start]:
+    for y, x, steps in graph[current]:
         if (y, x) not in visited:
             max_steps = max(
                 max_steps,
                 depth_first_search(graph, (y, x), end, length + steps, visited),
             )
 
-    visited.remove(start)
+    visited.remove(current)
     return max_steps
 
 
