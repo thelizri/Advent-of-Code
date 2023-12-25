@@ -16,24 +16,16 @@ def parse_input(input):
     for row in input:
         matches = re.findall(pattern, row)
         block = [int(x) for x in matches]
-        block[3] += 1
-        block[4] += 1
         blocks.append(block)
 
     return blocks
 
 
 def intersection(rect1, rect2):
-    x1, y1, _, xe1, ye1, _ = rect1
-    x2, y2, _, xe2, ye2, _ = rect2
-    x = max(x1, x2)
-    xend = min(xe1, xe2)
-    if x >= xend:
+    if max(rect1[0], rect2[0]) > min(rect1[3], rect2[3]):
         return False
 
-    y = max(y1, y2)
-    yend = min(ye1, ye2)
-    if y >= yend:
+    if max(rect1[1], rect2[1]) > min(rect1[4], rect2[4]):
         return False
 
     return True
@@ -45,16 +37,14 @@ def sort_blocks(blocks):
 
 
 def falling(blocks):
-    for i, block in enumerate(blocks):
-        minz, z = 1, block[2]
-        for block2 in blocks[:i]:
+    for index, block in enumerate(blocks):
+        maxz = 1
+        for block2 in blocks[:index]:
             if intersection(block, block2):
-                minz = max(minz, block2[5] + 1)
+                maxz = max(maxz, block2[5] + 1)
 
-        if z > minz:
-            diff = z - minz
-            block[2] -= diff
-            block[5] -= diff
+        block[5] += maxz - block[2]
+        block[2] = maxz
 
 
 def part1(blocks):
@@ -91,4 +81,5 @@ def part1(blocks):
 blocks = parse_input(input)
 sort_blocks(blocks)
 falling(blocks)
+sort_blocks(blocks)
 part1(blocks)
