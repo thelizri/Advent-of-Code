@@ -42,3 +42,20 @@ def sort_blocks(blocks):
 
 blocks = parse_input(input)
 blocks = sort_blocks(blocks)
+
+
+def falling(blocks):
+    for i, block in enumerate(blocks):
+        minz, z = 1, block[2]
+        for block2 in blocks[:i]:
+            if intersection(block, block2):
+                minz = max(minz, block2[5] + 1)
+
+        if z > minz:
+            diff = z - minz
+            block[2] -= diff
+            block[5] -= diff
+
+
+falling(blocks)
+print(blocks)
