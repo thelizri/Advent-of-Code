@@ -9,6 +9,8 @@ input = """1,0,1~1,2,1
 0,1,6~2,1,6
 1,1,8~1,1,9""".splitlines()
 
+input = open("day22.txt", "r").read().splitlines()
+
 
 def parse_input(input):
     pattern = r"\d+"
