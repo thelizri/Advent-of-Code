@@ -1,7 +1,7 @@
 from collections import deque
 import re
 
-input = """1,0,1~1,2,1
+example_input = """1,0,1~1,2,1
 0,0,2~2,0,2
 0,2,3~2,2,3
 0,0,4~0,2,4
@@ -49,9 +49,9 @@ def falling(blocks):
         block[2] = maxz
 
 
-def part1(blocks):
-    supported = {i: [] for i in range(len(blocks))}
-    support = {i: [] for i in range(len(blocks))}
+def get_structure(blocks):
+    j_issupportedby_i = {i: [] for i in range(len(blocks))}
+    i_supports_j = {i: [] for i in range(len(blocks))}
     for i, block in enumerate(blocks):
         z1 = block[5]
         for j, block2 in enumerate(blocks[i + 1 :], i + 1):
@@ -61,27 +61,26 @@ def part1(blocks):
             if z2 > z1 + 1:
                 break
             if intersection(block, block2):
-                supported[j].append(i)
-                support[i].append(j)
+                j_issupportedby_i[j].append(i)
+                i_supports_j[i].append(j)
+    return j_issupportedby_i, i_supports_j
+
+
+def part1(input):
+    blocks = parse_input(input)
+    sort_blocks(blocks)
+    falling(blocks)
+    sort_blocks(blocks)
+    j_issupportedby_i, i_supports_j = get_structure(blocks)
 
     count = 0
-    for value in support.values():
-        if len(value) == 0:
+    for supported_blocks in i_supports_j.values():
+        if len(supported_blocks) == 0 or all(
+            [len(j_issupportedby_i[j]) >= 2 for j in supported_blocks]
+        ):
             count += 1
-        else:
-            has_support = True
-            for j in value:
-                if len(supported[j]) <= 1:
-                    has_support = False
-                    break
-            if has_support:
-                count += 1
 
     print("Part 1:", count)
 
 
-blocks = parse_input(input)
-sort_blocks(blocks)
-falling(blocks)
-sort_blocks(blocks)
-part1(blocks)
+part1(input)
