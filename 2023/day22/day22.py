@@ -90,8 +90,24 @@ def part2(input):
     sort_blocks(blocks)
     j_issupportedby_i, i_supports_j = get_structure(blocks)
 
-    print("Part 2:")
+    def count_falling(i):
+        falling = set()
+        falling.add(i)
+        queue = deque(i_supports_j[i])
+        while queue:
+            block = queue.popleft()
+            support = j_issupportedby_i[block]
+            if all([x in falling for x in support]):
+                falling.add(block)
+                queue.extend(i_supports_j[block])
+        return len(falling) - 1
+
+    count = 0
+    for key in i_supports_j.keys():
+        count += count_falling(key)
+
+    print("Part 2:", count)
 
 
 part1(input)
-part2(example_input)
+part2(input)
