@@ -83,4 +83,15 @@ def part1(input):
     print("Part 1:", count)
 
 
+def part2(input):
+    blocks = parse_input(input)
+    sort_blocks(blocks)
+    falling(blocks)
+    sort_blocks(blocks)
+    j_issupportedby_i, i_supports_j = get_structure(blocks)
+
+    print("Part 2:")
+
+
 part1(input)
+part2(example_input)
