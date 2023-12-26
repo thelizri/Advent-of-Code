@@ -7,6 +7,8 @@ example_input = """19, 13, 30 @ -2,  1, -2
 12, 31, 28 @ -1, -2, -1
 20, 19, 15 @  1, -5, -3""".splitlines()
 
+input = open("day24.txt").read().splitlines()
+
 
 class Hailstone:
     def __init__(self, x, y, z, vx, vy, vz, A, B, C):
@@ -25,7 +27,7 @@ class Hailstone:
 
 
 vectors = []
-for row in example_input:
+for row in input:
     row = row.replace(" @", ",")
     px, py, pz, vx, vy, vz = [int(x) for x in row.split(",")]
     A = vy
@@ -33,7 +35,7 @@ for row in example_input:
     C = vy * px - vx * py
     vectors.append(Hailstone(px, py, pz, vx, vy, vz, A, B, C))
 
-mini, maxi = 7, 27
+mini, maxi = 200000000000000, 400000000000000
 count = 0
 for i, stoneA in enumerate(vectors[:-1]):
     for j, stoneB in enumerate(vectors[i + 1 :], i + 1):
