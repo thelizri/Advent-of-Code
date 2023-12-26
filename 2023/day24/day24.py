@@ -7,20 +7,47 @@ example_input = """19, 13, 30 @ -2,  1, -2
 12, 31, 28 @ -1, -2, -1
 20, 19, 15 @  1, -5, -3""".splitlines()
 
+
+class Hailstone:
+    def __init__(self, x, y, z, vx, vy, vz, A, B, C):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.vx = vx
+        self.vy = vy
+        self.vz = vz
+        self.A = A
+        self.B = B
+        self.C = C
+
+    def __repr__(self):
+        return "Hailstone({}, {}, {})".format(self.x, self.y, self.z)
+
+
 vectors = []
 for row in example_input:
     row = row.replace(" @", ",")
     px, py, pz, vx, vy, vz = [int(x) for x in row.split(",")]
-    A = py
-    B = -px
-    C = py * vx - px * vy
-    vectors.append((A, B, C))
+    A = vy
+    B = -vx
+    C = vy * px - vx * py
+    vectors.append(Hailstone(px, py, pz, vx, vy, vz, A, B, C))
 
-print(vectors)
+mini, maxi = 7, 27
+count = 0
+for i, stoneA in enumerate(vectors[:-1]):
+    for j, stoneB in enumerate(vectors[i + 1 :], i + 1):
+        first = np.array([[stoneA.A, stoneA.B], [stoneB.A, stoneB.B]])
+        second = np.array([stoneA.C, stoneB.C])
+        try:
+            x, y = np.linalg.solve(first, second)
+            if mini <= x <= maxi and mini <= y <= maxi:
+                if (x - stoneA.x) / stoneA.vx >= 0 and (y - stoneA.y) / stoneA.vy >= 0:
+                    if (x - stoneB.x) / stoneB.vx >= 0 and (
+                        y - stoneB.y
+                    ) / stoneB.vy >= 0:
+                        count += 1
+        except np.linalg.LinAlgError:
+            pass
 
-for i, a in enumerate(vectors):
-    for j, b in enumerate(vectors[i + 1 :], i + 1):
-        first = np.array([[a[0], a[1]], [b[0], b[1]]])
-        second = np.array([a[2], b[2]])
-        x, y = np.linalg.solve(first, second)
-        print("x: {:.1f}, y: {:.1f}".format(x, y))
+print("Part 1:", count)
