@@ -11,16 +11,16 @@ input = open("day24.txt").read().splitlines()
 
 
 class Hailstone:
-    def __init__(self, x, y, z, vx, vy, vz, A, B, C):
+    def __init__(self, x, y, z, vx, vy, vz):
         self.x = x
         self.y = y
         self.z = z
         self.vx = vx
         self.vy = vy
         self.vz = vz
-        self.A = A
-        self.B = B
-        self.C = C
+
+    def getStandardFormLine(self):
+        return self.vy, -self.vx, self.vy * self.x - self.vx * self.y
 
     def __repr__(self):
         return "Hailstone({}, {}, {})".format(self.x, self.y, self.z)
@@ -30,17 +30,16 @@ vectors = []
 for row in input:
     row = row.replace(" @", ",")
     px, py, pz, vx, vy, vz = [int(x) for x in row.split(",")]
-    A = vy
-    B = -vx
-    C = vy * px - vx * py
-    vectors.append(Hailstone(px, py, pz, vx, vy, vz, A, B, C))
+    vectors.append(Hailstone(px, py, pz, vx, vy, vz))
 
 mini, maxi = 200000000000000, 400000000000000
 count = 0
 for i, stoneA in enumerate(vectors[:-1]):
     for j, stoneB in enumerate(vectors[i + 1 :], i + 1):
-        first = np.array([[stoneA.A, stoneA.B], [stoneB.A, stoneB.B]])
-        second = np.array([stoneA.C, stoneB.C])
+        firstA, firstB, firstC = stoneA.getStandardFormLine()
+        secondA, secondB, secondC = stoneB.getStandardFormLine()
+        first = np.array([[firstA, firstB], [secondA, secondB]])
+        second = np.array([firstC, secondC])
         try:
             x, y = np.linalg.solve(first, second)
             if mini <= x <= maxi and mini <= y <= maxi:
