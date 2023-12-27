@@ -1,4 +1,5 @@
 import numpy as np
+import sympy as sp
 
 # px py pz @ vx vy vz
 example_input = """19, 13, 30 @ -2,  1, -2
@@ -18,6 +19,9 @@ class Hailstone:
         self.vx = vx
         self.vy = vy
         self.vz = vz
+
+    def getValues(self):
+        return self.x, self.y, self.z, self.vx, self.vy, self.vz
 
     def getStandardFormLine(self):
         return self.vy, -self.vx, self.vy * self.x - self.vx * self.y
@@ -52,3 +56,18 @@ for i, stoneA in enumerate(vectors[:-1]):
             pass
 
 print("Part 1:", count)
+
+# Part 2
+# This is a cheat solution, that I saw on the internet
+# Sympy does everything for us we just feed it the equations
+xr, yr, zr, vxr, vyr, vzr = sp.symbols("xr yr zr vxr vyr vzr")
+
+equations = []
+for stone in vectors:
+    x, y, z, vx, vy, vz = stone.getValues()
+    equations.append((xr - x) * (vy - vyr) - (yr - y) * (vx - vxr))
+    equations.append((yr - y) * (vz - vzr) - (zr - z) * (vy - vyr))
+
+solution = sp.solve(equations, [xr, yr, zr, vxr, vyr, vzr])
+x, y, z, vx, vy, vz = solution[0]
+print("Part 2:", x + y + z)
