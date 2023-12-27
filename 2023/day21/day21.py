@@ -1,6 +1,6 @@
 from collections import deque
 
-input = """...........
+example_input = """...........
 .....###.#.
 .###.##..#.
 ..#.#...#..
@@ -27,13 +27,13 @@ def find_start(garden):
 
 
 def flood_fill(garden, queue, visited):
-    result = deque()
     while queue:
-        y, x = queue.popleft()
+        y, x, steps = queue.popleft()
         if y < 0 or y >= height or x < 0 or x >= width:
             continue
         if garden[y][x] == "#":
             continue
+
         for y, x in [(y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)]:
             if y < 0 or y >= height or x < 0 or x >= width:
                 continue
@@ -41,24 +41,28 @@ def flood_fill(garden, queue, visited):
                 continue
             if (y, x) in visited:
                 continue
-            result.append((y, x))
-            visited.add((y, x))
-    return result
+            if steps > 0:
+                queue.append((y, x, steps - 1))
+            if (steps - 1) % 2 == 0:
+                visited.add((y, x))
+
+    return visited
 
 
-def part1(steps=64):
-    start, queue = find_start(input), deque()
-    queue.append(start)
-    visited_odd = set()
-    visited_even = set()
-    for i in range(1, steps + 1):
-        if i % 2 == 0:
-            queue = flood_fill(input, queue, visited_even)
-        else:
-            queue = flood_fill(input, queue, visited_odd)
+def part1(input=input, steps=64):
+    (y, x), queue = find_start(input), deque()
 
-    result = len(visited_even)
+    queue.append((y, x, steps))
+    visited = flood_fill(input, queue, set())
+
+    result = len(visited)
     print(result)
 
 
 part1()
+
+# Part 2
+# Reachable tiles = a*steps^2 + b*steps + c
+# 65 steps, 131*n steps
+# Note that 26501365 // 131 == 202300. I.e. this is the number of tile lengths that we can move away from the centre in a straight line, given this number of steps.
+# Also, 26501365 % 131 == 65. So, we can move exactly 202300 and one half complete tile distances from the centre.
