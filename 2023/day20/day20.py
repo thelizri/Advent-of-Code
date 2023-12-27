@@ -1,4 +1,5 @@
 from collections import deque
+from math import lcm
 
 example_input = r"""broadcaster -> a, b, c
 %a -> b
@@ -112,3 +113,37 @@ def part1(input):
 
 
 part1(input)
+
+# Part 2
+# rx is being fed into by one module
+# that module is being fed by several modules
+# those modules all need to signal high
+# find the cycle for each of those modules, we're assuming there is a cycle
+
+
+def part2(input):
+    modules = parse_input(input)
+    (module_that_pumps_into_rx,) = [
+        module for module in modules.values() if "rx" in module.outputs
+    ]
+
+    find_cycles_for_these_modules = list(module_that_pumps_into_rx.inputs.keys())
+    cycles = []
+    button_presses = 0
+    while find_cycles_for_these_modules:
+        button_presses += 1
+        signal_queue.append(("broadcaster", 0, "button"))
+        while signal_queue:
+            destination, signal, source = signal_queue.popleft()
+            if destination in modules:
+                modules[destination].receive_signal(signal, source)
+
+            if signal == 1 and source in find_cycles_for_these_modules:
+                cycles.append(button_presses)
+                find_cycles_for_these_modules.remove(source)
+
+    answer = lcm(*cycles)
+    print("Part 2:", answer)
+
+
+part2(input)
