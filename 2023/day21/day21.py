@@ -66,3 +66,63 @@ part1()
 # 65 steps, 131*n steps
 # Note that 26501365 // 131 == 202300. I.e. this is the number of tile lengths that we can move away from the centre in a straight line, given this number of steps.
 # Also, 26501365 % 131 == 65. So, we can move exactly 202300 and one half complete tile distances from the centre.
+
+
+def flood(garden, queue, visited):
+    height, width = len(garden), len(garden[0])
+    while queue:
+        y, x, steps = queue.popleft()
+        translated_y, translated_x = y % height, x % width
+
+        if garden[translated_y][translated_x] == "#":
+            continue
+
+        for y, x in [(y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)]:
+            translated_y, translated_x = y % height, x % width
+            if garden[translated_y][translated_x] == "#":
+                continue
+            if (y, x) in visited:
+                continue
+            if steps > 0:
+                queue.append((y, x, steps - 1))
+            if (steps - 1) % 2 == 0:
+                visited.add((y, x))
+
+    return visited
+
+
+def part2(input=example_input):
+    (y, x), queue = find_start(input), deque()
+    queue.append((y, x, 6))
+    visited = flood(input, queue, set())
+    result = len(visited)
+    assert result == 16
+
+    queue = deque()
+    queue.append((y, x, 10))
+    visited = flood(input, queue, set())
+    result = len(visited)
+    assert result == 50
+
+    queue = deque()
+    queue.append((y, x, 50))
+    visited = flood(input, queue, set())
+    result = len(visited)
+    assert result == 1594
+
+    queue = deque()
+    queue.append((y, x, 100))
+    visited = flood(input, queue, set())
+    result = len(visited)
+    assert result == 6536
+
+    queue = deque()
+    queue.append((y, x, 500))
+    visited = flood(input, queue, set())
+    result = len(visited)
+    assert result == 167004
+
+    print(result)
+
+
+part2()
