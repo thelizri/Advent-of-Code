@@ -46,12 +46,12 @@ def flood_fill(garden, queue, visited):
     return result
 
 
-def part1():
+def part1(steps=64):
     start, queue = find_start(input), deque()
     queue.append(start)
     visited_odd = set()
     visited_even = set()
-    for i in range(1, 65):
+    for i in range(1, steps + 1):
         if i % 2 == 0:
             queue = flood_fill(input, queue, visited_even)
         else:
