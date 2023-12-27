@@ -37,25 +37,25 @@ class Module:
         else:
             self.inputs = inputs
 
-    def receive_signal(self, signal, broadcaster):
+    def receive_signal(self, signal, source):
         if self.type == "FLIPFLOP":
             self.flip_flop(signal)
         elif self.type == "NAND":
-            self.nand(signal, broadcaster)
+            self.nand(signal, source)
         elif self.type == "BROADCAST":
             self.broadcast(signal)
 
     def send_signal(self, signal):
-        for output in self.outputs:
-            signal_queue.append((output, signal, self.name))
+        for destination in self.outputs:
+            signal_queue.append((destination, signal, self.name))
 
     def flip_flop(self, signal):
         if signal == 0:  # Only Flips on low signal
             self.value = 1 if self.value == 0 else 0
             self.send_signal(self.value)
 
-    def nand(self, signal, broadcaster):
-        self.inputs[broadcaster] = signal
+    def nand(self, signal, source):
+        self.inputs[source] = signal
         if all(self.inputs.values()):
             self.value = 0
         else:
@@ -74,7 +74,7 @@ def parse_input(input):
     modules = {}
     for row in input:
         broadcaster, receivers = row.split(" -> ")
-        receivers = receivers.split(", ")
+        receivers = [r.strip() for r in receivers.split(",")]
         if broadcaster[0] in "%&":
             type = broadcaster[0]
             broadcaster = broadcaster[1:]
@@ -91,20 +91,20 @@ def parse_input(input):
     return modules
 
 
-modules = parse_input(example_input2)
+modules = parse_input(input)
 
 low, high = 0, 0
 # Press button
 for i in range(1000):
     signal_queue.append(("broadcaster", 0, "button"))
     while signal_queue:
-        wire, signal, broadcaster = signal_queue.popleft()
+        destination, signal, source = signal_queue.popleft()
         if signal == 1:
             high += 1
         else:
             low += 1
-        if wire in modules:
-            modules[wire].receive_signal(signal, broadcaster)
+        if destination in modules:
+            modules[destination].receive_signal(signal, source)
 
 answer = high * low
 print("Part 1:", answer)
