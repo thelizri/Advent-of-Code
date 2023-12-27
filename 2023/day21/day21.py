@@ -1,4 +1,6 @@
 from collections import deque
+import numpy as np
+from math import ceil
 
 example_input = """...........
 .....###.#.
@@ -91,38 +93,31 @@ def flood(garden, queue, visited):
     return visited
 
 
-def part2(input=example_input):
-    (y, x), queue = find_start(input), deque()
-    queue.append((y, x, 6))
-    visited = flood(input, queue, set())
-    result = len(visited)
-    assert result == 16
+def find_parabola_coefficients(points):
+    A = np.array([[x**2, x, 1] for x, y in points])
+    b = np.array([y for x, y in points])
+    return np.linalg.solve(A, b)
 
-    queue = deque()
-    queue.append((y, x, 10))
-    visited = flood(input, queue, set())
-    result = len(visited)
-    assert result == 50
 
-    queue = deque()
-    queue.append((y, x, 50))
-    visited = flood(input, queue, set())
-    result = len(visited)
-    assert result == 1594
+def calculate_parabola_y(a, b, c, x):
+    return a * x**2 + b * x + c
 
-    queue = deque()
-    queue.append((y, x, 100))
-    visited = flood(input, queue, set())
-    result = len(visited)
-    assert result == 6536
 
-    queue = deque()
-    queue.append((y, x, 500))
-    visited = flood(input, queue, set())
-    result = len(visited)
-    assert result == 167004
+def part2(input=input):
+    (y, x) = find_start(input)
 
-    print(result)
+    results = []
+    for i in range(3):
+        queue = deque()
+        queue.append((y, x, 65 + 131 * i))
+        visited = flood(input, queue, set())
+        results.append((65 + 131 * i, len(visited)))
+
+    a, b, c = find_parabola_coefficients(results)
+
+    variable = 26501365
+    answer = calculate_parabola_y(a, b, c, variable)
+    print("Part 2:", ceil(answer))
 
 
 part2()
